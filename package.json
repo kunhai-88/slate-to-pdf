@@ -4,7 +4,12 @@
   "description": "hello slate",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify -t [ babelify --presets [ es2015 react ] ] ./demo/main.js > ./demo/dist.js;",
+    "deploy": "npm run build; gh-pages -d ./demo",
+    "watch": "watch 'npm run build' ./lib",
+    "serve": "http-server -p 9090 demo/",
+    "start": "npm run build; parallelshell 'npm run serve -s' 'npm run watch -s'"
   },
   "repository": {
     "type": "git",
@@ -18,6 +23,22 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ahai3840/slate-demo/issues"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-react": "^6.5.0",
+    "babelify": "^7.2.0",
+    "browserify": "^13.0.0",
+    "draft-js": "0.10.5",
+    "eslint": "^2.11.1",
+    "expect": "^1.20.1",
+    "gh-pages": "^0.11.0",
+    "http-server": "^0.9.0",
+    "mocha": "^2.5.3",
+    "parallelshell": "2.0.0",
+    "react": "16.4.1",
+    "react-dom": "16.4.1",
+    "watch": "^0.18.0"
   },
   "homepage": "https://github.com/ahai3840/slate-demo#readme"
 }
