@@ -1,0 +1,23 @@
+{
+  "name": "slate-demo",
+  "version": "1.0.0",
+  "description": "hello slate",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahai3840/slate-demo.git"
+  },
+  "keywords": [
+    "slate",
+    "demo"
+  ],
+  "author": "andy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ahai3840/slate-demo/issues"
+  },
+  "homepage": "https://github.com/ahai3840/slate-demo#readme"
+}
