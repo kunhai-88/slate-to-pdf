@@ -57205,10 +57205,9 @@ var RichTextExample = function (_React$Component5) {
           null,
           this.renderMarkButton('bold', 'format_bold'),
           this.renderMarkButton('underlined', 'format_underlined'),
-          this.renderMarkButton('code', 'code'),
-          this.renderBlockButton('heading-one', 'looks_one'),
-          this.renderBlockButton('heading-two', 'looks_two'),
-          this.renderBlockButton('block-quote', 'format_quote'),
+          this.renderBlockButton('heading-one', 'H1'),
+          this.renderBlockButton('heading-two', 'H2'),
+          this.renderBlockButton('heading-two', 'H3'),
           this.renderBlockButton('numbered-list', 'format_list_numbered'),
           this.renderBlockButton('bulleted-list', 'format_list_bulleted'),
           isInTable ? this.renderTableToolbar() : null,
@@ -57427,12 +57426,6 @@ var _initialiseProps = function _initialiseProps() {
 
 
     switch (node.type) {
-      case 'block-quote':
-        return _react2.default.createElement(
-          'blockquote',
-          attributes,
-          children
-        );
       case 'bulleted-list':
         return _react2.default.createElement(
           'ul',
@@ -57448,6 +57441,12 @@ var _initialiseProps = function _initialiseProps() {
       case 'heading-two':
         return _react2.default.createElement(
           'h2',
+          attributes,
+          children
+        );
+      case 'heading-three':
+        return _react2.default.createElement(
+          'h3',
           attributes,
           children
         );
@@ -57634,6 +57633,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var LEAF = 'leaf';
 var BLOCK = 'block';
+var TABLE = 'table';
+
 var parse = function parse(nodes) {
   return (0, _fp.map)(function (node) {
     var object = (0, _fp.prop)('object')(node);
@@ -57641,6 +57642,14 @@ var parse = function parse(nodes) {
     var leaves = (0, _fp.prop)('leaves')(node);
     var nextNodes = (0, _fp.prop)('nodes')(node);
     if (nextNodes) {
+      if (type === TABLE) {
+        return {
+          style: 'tableExample',
+          table: {
+            body: parse(nextNodes)
+          }
+        };
+      }
       return parse(nextNodes);
     }
     return (0, _fp.map)(function (leaf) {
@@ -57657,12 +57666,7 @@ exports.default = function (state) {
   console.log(parse(nodes));
 
   var dd = {
-    content: [].concat(_toConsumableArray(parse(nodes)), [{
-      style: 'tableExample',
-      table: {
-        body: [[{ rowSpan: 3, text: 'rowSpan: 3\n\nborder:\n[false, false, false, false]', fillColor: '#eeeeee', border: [false, false, false, false] }, 'border:\nundefined', 'border:\nundefined'], ['', 'border:\nundefined', 'border:\nundefined'], ['', 'border:\nundefined', 'border:\nundefined']]
-      }
-    }]),
+    content: [].concat(_toConsumableArray(parse(nodes))),
     styles: {
       header: {
         fontSize: 18,
