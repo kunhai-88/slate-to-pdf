@@ -1,49 +1,60 @@
 import React from 'react'
+import ReactDOM from 'react-dom';
+import Plain from 'slate-plain-serializer'
 import { Editor } from 'slate-react'
-import { State } from 'slate'
 
-const initialState = State.fromJSON({
-  document: {
-    nodes: [
-      {
-        kind: 'block',
-        type: 'paragraph',
-        nodes: [
-          {
-            kind: 'text',
-            ranges: [
-              {
-                text: 'A line of text in a paragraph.'
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-})
+/**
+ * The plain text example.
+ *
+ * @type {Component}
+ */
 
-// 定义我们的应用…
-class App extends React.Component {
+class PlainText extends React.Component {
+  /**
+   * Deserialize the initial editor value.
+   *
+   * @type {Object}
+   */
 
-  // 设置应用创建时的初始状态。
   state = {
-    state: initialState
+    value: Plain.deserialize(
+      'This is editable plain text, just like a <textarea>!'
+    ),
   }
 
-  // 发生变更时，使用新的编辑器状态更新应用的 React 状态。
-  onChange = ({ state }) => {
-    this.setState({ state })
-  }
+  /**
+   * Render the editor.
+   *
+   * @return {Component} component
+   */
 
-  // 渲染编辑器。
   render() {
     return (
       <Editor
-        state={this.state.state}
+        placeholder="Enter some plain text..."
+        value={this.state.value}
         onChange={this.onChange}
       />
     )
   }
 
+  /**
+   * On change.
+   *
+   * @param {Change} change
+   */
+
+  onChange = ({ value }) => {
+    this.setState({ value })
+  }
 }
+
+/**
+ * Export.
+ */
+
+
+ReactDOM.render(
+  <PlainText />,
+  document.getElementById('target')
+);

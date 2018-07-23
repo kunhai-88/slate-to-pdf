@@ -7,9 +7,15 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _slateReact = require('slate-react');
+var _reactDom = require('react-dom');
 
-var _slate = require('slate');
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _slatePlainSerializer = require('slate-plain-serializer');
+
+var _slatePlainSerializer2 = _interopRequireDefault(_slatePlainSerializer);
+
+var _slateReact = require('slate-react');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -19,68 +25,75 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var initialState = _slate.State.fromJSON({
-  document: {
-    nodes: [{
-      kind: 'block',
-      type: 'paragraph',
-      nodes: [{
-        kind: 'text',
-        ranges: [{
-          text: 'A line of text in a paragraph.'
-        }]
-      }]
-    }]
-  }
-});
+/**
+ * The plain text example.
+ *
+ * @type {Component}
+ */
 
-// 定义我们的应用…
+var PlainText = function (_React$Component) {
+  _inherits(PlainText, _React$Component);
 
-var App = function (_React$Component) {
-  _inherits(App, _React$Component);
-
-  function App() {
+  function PlainText() {
     var _ref;
 
     var _temp, _this, _ret;
 
-    _classCallCheck(this, App);
+    _classCallCheck(this, PlainText);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = App.__proto__ || Object.getPrototypeOf(App)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-      state: initialState
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PlainText.__proto__ || Object.getPrototypeOf(PlainText)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+      value: _slatePlainSerializer2.default.deserialize('This is editable plain text, just like a <textarea>!')
 
-      // 发生变更时，使用新的编辑器状态更新应用的 React 状态。
+      /**
+       * Render the editor.
+       *
+       * @return {Component} component
+       */
+
     }, _this.onChange = function (_ref2) {
-      var state = _ref2.state;
+      var value = _ref2.value;
 
-      _this.setState({ state: state });
+      _this.setState({ value: value });
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
+  /**
+   * Deserialize the initial editor value.
+   *
+   * @type {Object}
+   */
 
-  // 设置应用创建时的初始状态。
-
-
-  _createClass(App, [{
+  _createClass(PlainText, [{
     key: 'render',
-
-
-    // 渲染编辑器。
     value: function render() {
       return _react2.default.createElement(_slateReact.Editor, {
-        state: this.state.state,
+        placeholder: 'Enter some plain text...',
+        value: this.state.value,
         onChange: this.onChange
       });
     }
+
+    /**
+     * On change.
+     *
+     * @param {Change} change
+     */
+
   }]);
 
-  return App;
+  return PlainText;
 }(_react2.default.Component);
 
-},{"react":215,"slate":227,"slate-react":223}],2:[function(require,module,exports){
+/**
+ * Export.
+ */
+
+_reactDom2.default.render(_react2.default.createElement(PlainText, null), document.getElementById('target'));
+
+},{"react":215,"react-dom":210,"slate-plain-serializer":221,"slate-react":223}],2:[function(require,module,exports){
 'use strict';
 
 var GROUP_LEFT_TO_RIGHT,

@@ -7,9 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "browserify -t [ babelify --presets [ es2015 react ]  --plugins [ transform-class-properties ] ] ./demo/main.js > ./demo/dist.js;",
     "deploy": "npm run build; gh-pages -d ./demo",
-    "watch": "watch 'npm run build' ./src",
+    "watch": "watch 'npm run build' ./demo",
     "serve": "http-server -p 8090 demo/",
-    "start": "npm run build; parallelshell 'npm run serve -s' 'npm run watch -s'"
+    "start": "npm run build; parallelshell 'npm run serve -s'"
   },
   "repository": {
     "type": "git",
