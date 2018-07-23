@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify -t [ babelify --presets [ es2015 react ]  --plugins [ transform-class-properties ] ] ./demo/main.js > ./demo/dist.js;",
+    "build": "browserify -t [ babelify --presets [ es2015 react ]  --plugins [ transform-class-properties  transform-exponentiation-operator transform-object-rest-spread ] ] ./demo/main.js > ./demo/dist.js;",
     "deploy": "npm run build; gh-pages -d ./demo",
-    "watch": "watch 'npm run build' ./demo",
-    "serve": "http-server -p 8090 demo/",
-    "start": "npm run build; parallelshell 'npm run serve -s'"
+    "watch": "watch 'npm run build' ./src",
+    "serve": "http-server -p 8090 ./demo",
+    "start": "npm run build; parallelshell 'npm run serve -s' 'npm run watch -s'"
   },
   "repository": {
     "type": "git",
@@ -41,5 +41,15 @@
     "react-dom": "16.4.1",
     "watch": "^0.18.0"
   },
-  "homepage": "https://github.com/ahai3840/slate-demo#readme"
+  "homepage": "https://github.com/ahai3840/slate-demo#readme",
+  "dependencies": {
+    "babel-plugin-transform-exponentiation-operator": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "emotion": "^9.2.6",
+    "immutable": "^3.8.2",
+    "is-hotkey": "^0.1.2",
+    "react-emotion": "^9.2.6",
+    "slate": "^0.34.6",
+    "slate-react": "^0.13.3"
+  }
 }
