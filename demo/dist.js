@@ -17,7 +17,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_app2.default, null), document.getElementById('target'));
 
-},{"../src/app":240,"react":224,"react-dom":218}],2:[function(require,module,exports){
+},{"../src/app":278,"react":224,"react-dom":218}],2:[function(require,module,exports){
 'use strict';
 
 /* eslint-disable */
@@ -1526,7 +1526,7 @@ module.exports = createEmotion;
 
 
 }).call(this,require('_process'))
-},{"@emotion/hash":2,"@emotion/memoize":4,"@emotion/stylis":5,"@emotion/unitless":6,"_process":210,"stylis-rule-sheet":239}],9:[function(require,module,exports){
+},{"@emotion/hash":2,"@emotion/memoize":4,"@emotion/stylis":5,"@emotion/unitless":6,"_process":210,"stylis-rule-sheet":276}],9:[function(require,module,exports){
 'use strict';
 
 var GROUP_LEFT_TO_RIGHT,
@@ -34084,7 +34084,7 @@ var index = {
 exports.default = index;
 
 
-},{"isomorphic-base64":35,"slate":236}],227:[function(require,module,exports){
+},{"isomorphic-base64":35,"slate":273}],227:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -34651,6 +34651,1935 @@ exports.default = index;
 },{}],229:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _slate = require('slate');
+
+/**
+ * Clear the content of the given cell
+ */
+function clearCell(opts, change, cell) {
+    var newBlock = _slate.Block.create({ type: opts.typeContent });
+    var nodes = cell.nodes;
+
+    // Insert a new empty node
+
+    change.insertNodeByKey(cell.key, 0, newBlock, { normalize: false });
+
+    // Remove all previous nodes
+    nodes.forEach(function (node) {
+        change.removeNodeByKey(node.key);
+    });
+
+    change.normalizeNodeByKey(cell.key);
+
+    return change;
+}
+exports.default = clearCell;
+},{"slate":273}],230:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.moveSelectionBy = exports.moveSelection = exports.clearCell = exports.removeTableByKey = exports.removeTable = exports.removeColumnByKey = exports.removeColumn = exports.insertColumn = exports.removeRowByKey = exports.removeRow = exports.insertRow = exports.insertTable = undefined;
+
+var _insertTable = require('./insertTable');
+
+var _insertTable2 = _interopRequireDefault(_insertTable);
+
+var _insertRow = require('./insertRow');
+
+var _insertRow2 = _interopRequireDefault(_insertRow);
+
+var _removeRow = require('./removeRow');
+
+var _removeRow2 = _interopRequireDefault(_removeRow);
+
+var _insertColumn = require('./insertColumn');
+
+var _insertColumn2 = _interopRequireDefault(_insertColumn);
+
+var _removeColumn = require('./removeColumn');
+
+var _removeColumn2 = _interopRequireDefault(_removeColumn);
+
+var _removeTable = require('./removeTable');
+
+var _removeTable2 = _interopRequireDefault(_removeTable);
+
+var _removeRowByKey = require('./removeRowByKey');
+
+var _removeRowByKey2 = _interopRequireDefault(_removeRowByKey);
+
+var _removeColumnByKey = require('./removeColumnByKey');
+
+var _removeColumnByKey2 = _interopRequireDefault(_removeColumnByKey);
+
+var _removeTableByKey = require('./removeTableByKey');
+
+var _removeTableByKey2 = _interopRequireDefault(_removeTableByKey);
+
+var _clearCell = require('./clearCell');
+
+var _clearCell2 = _interopRequireDefault(_clearCell);
+
+var _moveSelection = require('./moveSelection');
+
+var _moveSelection2 = _interopRequireDefault(_moveSelection);
+
+var _moveSelectionBy = require('./moveSelectionBy');
+
+var _moveSelectionBy2 = _interopRequireDefault(_moveSelectionBy);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.insertTable = _insertTable2.default;
+exports.insertRow = _insertRow2.default;
+exports.removeRow = _removeRow2.default;
+exports.removeRowByKey = _removeRowByKey2.default;
+exports.insertColumn = _insertColumn2.default;
+exports.removeColumn = _removeColumn2.default;
+exports.removeColumnByKey = _removeColumnByKey2.default;
+exports.removeTable = _removeTable2.default;
+exports.removeTableByKey = _removeTableByKey2.default;
+exports.clearCell = _clearCell2.default;
+exports.moveSelection = _moveSelection2.default;
+exports.moveSelectionBy = _moveSelectionBy2.default;
+},{"./clearCell":229,"./insertColumn":231,"./insertRow":232,"./insertTable":233,"./moveSelection":234,"./moveSelectionBy":235,"./removeColumn":236,"./removeColumnByKey":237,"./removeRow":238,"./removeRowByKey":239,"./removeTable":240,"./removeTableByKey":241}],231:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _utils = require('../utils');
+
+var _moveSelection = require('./moveSelection');
+
+var _moveSelection2 = _interopRequireDefault(_moveSelection);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Insert a new column in current table
+ */
+function insertColumn(opts, change, at, // Column index
+getCell) {
+    var value = change.value;
+    var startKey = value.startKey;
+
+
+    var pos = _utils.TablePosition.create(opts, value.document, startKey);
+    var table = pos.table;
+
+
+    var columnIndex = typeof at === 'undefined' ? pos.getColumnIndex() + 1 : at;
+
+    // Insert the new cell
+    table.nodes.forEach(function (row, rowIndex) {
+        var newCell = getCell ? getCell(columnIndex, rowIndex) : (0, _utils.createCell)(opts);
+        change.insertNodeByKey(row.key, columnIndex, newCell, {
+            normalize: false
+        });
+    });
+
+    // Update the selection (not doing can break the undo)
+    return (0, _moveSelection2.default)(opts, change, pos.getColumnIndex() + 1, pos.getRowIndex());
+}
+exports.default = insertColumn;
+},{"../utils":260,"./moveSelection":234,"slate":273}],232:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _utils = require('../utils');
+
+/**
+ * Insert a new row in current table
+ */
+function insertRow(opts, change, at, // row index
+getRow // Generate the row yourself
+) {
+    var value = change.value;
+    var startKey = value.startKey;
+
+
+    var pos = _utils.TablePosition.create(opts, value.document, startKey);
+    var table = pos.table;
+
+    // Create a new row with the right count of cells
+
+    var columns = table.nodes.get(0).nodes.size;
+    var newRow = getRow ? getRow(columns) : (0, _utils.createRow)(opts, columns);
+
+    if (typeof at === 'undefined') {
+        at = pos.getRowIndex() + 1;
+    }
+
+    return change.insertNodeByKey(table.key, at, newRow).collapseToEndOf(newRow.nodes.get(pos.getColumnIndex()));
+}
+
+exports.default = insertRow;
+},{"../utils":260,"slate":273}],233:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _utils = require('../utils');
+
+/**
+ * Insert a new table
+ */
+function insertTable(opts, change) {
+    var columns = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2;
+    var rows = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 2;
+    var getCellContent = arguments[4];
+    var value = change.value;
+
+
+    if (!value.selection.startKey) return change;
+
+    // Create the table node
+    var table = (0, _utils.createTable)(opts, columns, rows, getCellContent);
+
+    return change.insertBlock(table);
+}
+
+exports.default = insertTable;
+},{"../utils":260,"slate":273}],234:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _utils = require('../utils');
+
+/**
+ * Move selection to {x,y}
+ */
+function moveSelection(opts, change, x, y) {
+    var value = change.value;
+    var startKey = value.startKey;
+
+    var pos = _utils.TablePosition.create(opts, value.document, startKey);
+
+    if (!pos.isInCell()) {
+        throw new Error('moveSelection can only be applied from within a cell');
+    }
+
+    var table = pos.table;
+
+    var row = table.nodes.get(y);
+    var cell = row.nodes.get(x);
+
+    return change.collapseToStartOf(cell);
+}
+
+exports.default = moveSelection;
+},{"../utils":260,"slate":273}],235:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+require('slate');
+
+var _utils = require('../utils');
+
+/**
+ * Move selection by a {x,y} relative movement
+ */
+function moveSelectionBy(opts, change, x, //  Move horizontally by x
+y // Move vertically by y
+) {
+    var value = change.value;
+    var startKey = value.startKey;
+
+    var pos = _utils.TablePosition.create(opts, value.document, startKey);
+    if (!pos.isInCell()) {
+        throw new Error('moveSelectionBy can only be applied in a cell');
+    }
+
+    var rowIndex = pos.getRowIndex();
+    var colIndex = pos.getColumnIndex();
+    var width = pos.getWidth();
+    var height = pos.getHeight();
+
+    var _normPos = normPos(x + colIndex, y + rowIndex, width, height),
+        _normPos2 = _slicedToArray(_normPos, 2),
+        absX = _normPos2[0],
+        absY = _normPos2[1];
+
+    var isGoingUp = y < 0;
+
+    if (absX === -1) {
+        // Out of table
+        return change;
+    }
+
+    var table = pos.table;
+
+    var row = table.nodes.get(absY);
+    var cell = row.nodes.get(absX);
+
+    if (isGoingUp) {
+        change.collapseToEndOf(cell);
+    } else {
+        change.collapseToStartOf(cell);
+    }
+
+    return change;
+}
+
+/**
+ * Normalize position in a table. If x is out of the row, update y accordingly.
+ * Returns [-1, -1] if the new selection is out of table
+ */
+function normPos(x, y, width, height) {
+    if (x < 0) {
+        x = width - 1;
+        y -= 1;
+    }
+
+    if (y < 0) {
+        return [-1, -1];
+    }
+
+    if (x >= width) {
+        x = 0;
+        y += 1;
+    }
+
+    if (y >= height) {
+        return [-1, -1];
+    }
+
+    return [x, y];
+}
+
+exports.default = moveSelectionBy;
+},{"../utils":260,"slate":273}],236:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _utils = require('../utils');
+
+var _removeColumnByKey = require('./removeColumnByKey');
+
+var _removeColumnByKey2 = _interopRequireDefault(_removeColumnByKey);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Delete current column in a table
+ */
+function removeColumn(opts, change, at) {
+    var value = change.value;
+    var startKey = value.startKey;
+
+
+    var pos = _utils.TablePosition.create(opts, value.document, startKey);
+
+    var columnKey = void 0;
+    if (typeof at === 'undefined') {
+        columnKey = pos.cell.key;
+    } else {
+        columnKey = pos.row.nodes.get(at).key;
+    }
+
+    return (0, _removeColumnByKey2.default)(opts, change, columnKey);
+}
+exports.default = removeColumn;
+},{"../utils":260,"./removeColumnByKey":237,"slate":273}],237:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _utils = require('../utils');
+
+var _clearCell = require('./clearCell');
+
+var _clearCell2 = _interopRequireDefault(_clearCell);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Delete the column associated with the given cell key in a table
+ */
+function removeColumnByKey(opts, change, key) {
+    var value = change.value;
+
+
+    var pos = _utils.TablePosition.create(opts, value.document, key);
+    var table = pos.table;
+
+
+    var colIndex = pos.getColumnIndex();
+
+    var rows = table.nodes;
+
+    // Remove the cell from every row
+    if (pos.getWidth() > 1) {
+        rows.forEach(function (row) {
+            var cell = row.nodes.get(colIndex);
+            change.removeNodeByKey(cell.key, { normalize: false });
+        });
+    } else {
+        // If last column, clear text in cells instead
+        rows.forEach(function (row) {
+            row.nodes.forEach(function (cell) {
+                cell.nodes.forEach(function (node) {
+                    return (0, _clearCell2.default)(opts, change, cell);
+                });
+            });
+        });
+    }
+
+    // Replace the table
+    return change;
+}
+exports.default = removeColumnByKey;
+},{"../utils":260,"./clearCell":229,"slate":273}],238:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _utils = require('../utils');
+
+var _removeRowByKey = require('./removeRowByKey');
+
+var _removeRowByKey2 = _interopRequireDefault(_removeRowByKey);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Remove current row in a table. Clear it if last remaining row
+ */
+function removeRow(opts, change, at) {
+    var value = change.value;
+    var startKey = value.startKey;
+
+
+    var pos = _utils.TablePosition.create(opts, value.document, startKey);
+
+    var rowKey = void 0;
+    if (typeof at === 'undefined') {
+        rowKey = pos.row.key;
+    } else {
+        rowKey = pos.table.nodes.get(at).key;
+    }
+
+    return (0, _removeRowByKey2.default)(opts, change, rowKey);
+}
+exports.default = removeRow;
+},{"../utils":260,"./removeRowByKey":239,"slate":273}],239:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _utils = require('../utils');
+
+var _clearCell = require('./clearCell');
+
+var _clearCell2 = _interopRequireDefault(_clearCell);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Remove the row associated to a given key in a table.
+ * Clear thw row if last remaining row
+ */
+function removeRowByKey(opts, change, key) {
+    var value = change.value;
+
+
+    var pos = _utils.TablePosition.create(opts, value.document, key);
+
+    // Update table by removing the row
+    if (pos.getHeight() > 1) {
+        change.removeNodeByKey(key);
+    } else {
+        // If last remaining row, clear it instead
+        pos.row.nodes.forEach(function (cell) {
+            cell.nodes.forEach(function (node) {
+                return (0, _clearCell2.default)(opts, change, cell);
+            });
+        });
+    }
+
+    return change;
+}
+exports.default = removeRowByKey;
+},{"../utils":260,"./clearCell":229,"slate":273}],240:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _removeTableByKey = require('./removeTableByKey');
+
+var _removeTableByKey2 = _interopRequireDefault(_removeTableByKey);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Delete the whole table at position
+ */
+function removeTable(opts, change) {
+    var value = change.value;
+    var startKey = value.startKey;
+
+
+    return (0, _removeTableByKey2.default)(opts, change, startKey);
+}
+
+exports.default = removeTable;
+},{"./removeTableByKey":241,"slate":273}],241:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _slate = require('slate');
+
+var _utils = require('../utils');
+
+/**
+ * Delete the whole table at the given node key
+ */
+function removeTableByKey(opts, change, key) {
+    var value = change.value;
+
+
+    var pos = _utils.TablePosition.create(opts, value.document, key);
+    var table = pos.table;
+    var document = change.value.document;
+
+    var nextFocusBlock = null;
+    var shouldCollapseToEnd = false;
+
+    var nextBlock = change.value.document.getNextBlock(table.key);
+    if (nextBlock) {
+        nextFocusBlock = nextBlock;
+    } else {
+        var prevBlock = change.value.document.getPreviousBlock(table.key);
+        if (prevBlock) {
+            nextFocusBlock = prevBlock;
+            shouldCollapseToEnd = true;
+        } else if (opts.exitBlockType) {
+            nextFocusBlock = _slate.Block.create({
+                type: opts.exitBlockType,
+                nodes: [_slate.Text.create('')]
+            });
+            var tableParent = document.getParent(table.key);
+            var insertionIndex = tableParent.nodes.indexOf(table) + 1;
+            change.insertNodeByKey(tableParent.key, insertionIndex, nextFocusBlock);
+        }
+    }
+
+    change.removeNodeByKey(table.key);
+    if (!nextFocusBlock) {
+        return change;
+    }
+    if (shouldCollapseToEnd) {
+        change.collapseToEndOf(nextFocusBlock).focus();
+    } else {
+        change.collapseToStartOf(nextFocusBlock).focus();
+    }
+    return change;
+}
+
+exports.default = removeTableByKey;
+},{"../utils":260,"slate":273}],242:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _changes = require('./changes');
+
+var _utils = require('./utils');
+
+var _validation = require('./validation');
+
+var _options = require('./options');
+
+var _options2 = _interopRequireDefault(_options);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+/**
+ * Returns the core of the plugin, limited to the validation and normalization
+ * part of `slate-edit-table`, and utils.
+ *
+ * Import this directly: `import EditTable from 'slate-edit-table/lib/core'`
+ * if you don't care about behavior/rendering and you
+ * are only manipulating `Slate.Values` without rendering them.
+ * That way you do not depend on `slate-react`.
+ */
+function core(optionsParam) {
+    var opts = new _options2.default(optionsParam);
+
+    return {
+        schema: (0, _validation.schema)(opts),
+        validateNode: (0, _validation.validateNode)(opts),
+
+        utils: {
+            isSelectionInTable: _utils.isSelectionInTable.bind(null, opts),
+            isSelectionOutOfTable: _utils.isSelectionOutOfTable.bind(null, opts),
+            getPosition: _utils.getPosition.bind(null, opts),
+            createCell: _utils.createCell.bind(null, opts),
+            createRow: _utils.createRow.bind(null, opts),
+            createTable: _utils.createTable.bind(null, opts),
+            forEachCells: _utils.forEachCells.bind(null, opts),
+            getCellsAtRow: _utils.getCellsAtRow.bind(null, opts),
+            getCellsAtColumn: _utils.getCellsAtColumn.bind(null, opts)
+        },
+
+        changes: {
+            insertTable: _changes.insertTable.bind(null, opts),
+            clearCell: _changes.clearCell.bind(null, opts),
+            removeRowByKey: _changes.removeRowByKey.bind(null, opts),
+            removeColumnByKey: _changes.removeColumnByKey.bind(null, opts),
+            removeTableByKey: _changes.removeTableByKey.bind(null, opts),
+            insertRow: bindAndScopeChange(opts, _changes.insertRow),
+            removeRow: bindAndScopeChange(opts, _changes.removeRow),
+            insertColumn: bindAndScopeChange(opts, _changes.insertColumn),
+            removeColumn: bindAndScopeChange(opts, _changes.removeColumn),
+            removeTable: bindAndScopeChange(opts, _changes.removeTable),
+            moveSelection: bindAndScopeChange(opts, _changes.moveSelection),
+            moveSelectionBy: bindAndScopeChange(opts, _changes.moveSelectionBy)
+        }
+    };
+}
+
+/**
+ * Bind a change to given options, and scope it to act only inside a table
+ */
+function bindAndScopeChange(opts, fn) {
+    return function (change) {
+        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+            args[_key - 1] = arguments[_key];
+        }
+
+        var value = change.value;
+
+
+        if (!(0, _utils.isSelectionInTable)(opts, value)) {
+            return change;
+        }
+
+        // $FlowFixMe
+        return fn.apply(undefined, _toConsumableArray([opts, change].concat(args)));
+    };
+}
+
+exports.default = core;
+},{"./changes":230,"./options":251,"./utils":260,"./validation":263}],243:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.onKeyDown = exports.onUpDown = exports.onBackspace = exports.onTab = exports.onModEnter = exports.onEnter = undefined;
+
+var _onEnter = require('./onEnter');
+
+var _onEnter2 = _interopRequireDefault(_onEnter);
+
+var _onModEnter = require('./onModEnter');
+
+var _onModEnter2 = _interopRequireDefault(_onModEnter);
+
+var _onTab = require('./onTab');
+
+var _onTab2 = _interopRequireDefault(_onTab);
+
+var _onBackspace = require('./onBackspace');
+
+var _onBackspace2 = _interopRequireDefault(_onBackspace);
+
+var _onUpDown = require('./onUpDown');
+
+var _onUpDown2 = _interopRequireDefault(_onUpDown);
+
+var _onKeyDown = require('./onKeyDown');
+
+var _onKeyDown2 = _interopRequireDefault(_onKeyDown);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.onEnter = _onEnter2.default;
+exports.onModEnter = _onModEnter2.default;
+exports.onTab = _onTab2.default;
+exports.onBackspace = _onBackspace2.default;
+exports.onUpDown = _onUpDown2.default;
+exports.onKeyDown = _onKeyDown2.default;
+},{"./onBackspace":244,"./onEnter":245,"./onKeyDown":246,"./onModEnter":247,"./onTab":248,"./onUpDown":249}],244:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _changes = require('../changes');
+
+function onBackspace(event, change, editor, opts) {
+    var value = change.value;
+    var startBlock = value.startBlock,
+        startOffset = value.startOffset,
+        isCollapsed = value.isCollapsed,
+        endBlock = value.endBlock,
+        document = value.document;
+
+
+    var startCell = document.getClosest(startBlock.key, opts.isCell);
+    var endCell = document.getClosest(endBlock.key, opts.isCell);
+
+    var startBlockIndex = startCell.nodes.findIndex(function (block) {
+        return block.key == startBlock.key;
+    });
+
+    // If a cursor is collapsed at the start of the first block, do nothing
+    if (startOffset === 0 && isCollapsed && startBlockIndex === 0) {
+        if (startBlock.isVoid) {
+            // Delete the block normally if it is a void block
+            return undefined;
+        }
+
+        event.preventDefault();
+        return change;
+    }
+
+    // If "normal" deletion, we continue
+    if (startCell === endCell) {
+        return undefined;
+    }
+
+    // If cursor is between multiple blocks,
+    // we clear the content of the cells.
+    event.preventDefault();
+
+    var blocks = value.blocks;
+
+    // Get all cells that contains the selection
+
+    var cells = blocks.map(function (node) {
+        return node.type === opts.typeCell ? node : document.getClosest(node.key, function (a) {
+            return a.type === opts.typeCell;
+        });
+    }).toSet();
+
+    // If the cursor is at the very end of the first cell, ignore it.
+    // If the cursor is at the very start of the last cell, ignore it.
+    // This behavior is to compensate hanging selection behaviors:
+    // https://github.com/ianstormtaylor/slate/pull/1605
+    var ignoreFirstCell = value.selection.collapseToStart().isAtEndOf(cells.first());
+    var ignoreLastCell = value.selection.collapseToEnd().isAtStartOf(cells.last());
+
+    var cellsToClear = cells;
+    if (ignoreFirstCell) {
+        cellsToClear = cellsToClear.rest();
+    }
+    if (ignoreLastCell) {
+        cellsToClear = cellsToClear.butLast();
+    }
+
+    // Clear all the selection
+    cellsToClear.forEach(function (cell) {
+        return (0, _changes.clearCell)(opts, change, cell);
+    });
+
+    // Update the selection properly, and avoid reset of selection
+    var updatedStartCell = change.value.document.getDescendant(cellsToClear.first().key);
+    return change.collapseToStartOf(updatedStartCell);
+}
+
+exports.default = onBackspace;
+},{"../changes":230,"slate":273}],245:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _utils = require('../utils');
+
+var _changes = require('../changes');
+
+/**
+ * Insert a new row when pressing "Enter"
+ */
+function onEnter(event, change, editor, opts) {
+    event.preventDefault();
+    var _change$value = change.value,
+        selection = _change$value.selection,
+        document = _change$value.document;
+
+    var pos = _utils.TablePosition.create(opts, document, selection.startKey);
+
+    if (!selection.hasFocusAtStartOf(pos.cell) && !selection.hasFocusAtEndOf(pos.cell)) {
+        return undefined;
+    }
+
+    if (event.shiftKey) {
+        return change.splitBlock().setBlocks({ type: opts.typeContent, data: {} });
+    }
+
+    return (0, _changes.insertRow)(opts, change);
+}
+exports.default = onEnter;
+},{"../changes":230,"../utils":260,"slate":273}],246:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _utils = require('../utils');
+
+var _onEnter = require('./onEnter');
+
+var _onEnter2 = _interopRequireDefault(_onEnter);
+
+var _onModEnter = require('./onModEnter');
+
+var _onModEnter2 = _interopRequireDefault(_onModEnter);
+
+var _onTab = require('./onTab');
+
+var _onTab2 = _interopRequireDefault(_onTab);
+
+var _onBackspace = require('./onBackspace');
+
+var _onBackspace2 = _interopRequireDefault(_onBackspace);
+
+var _onUpDown = require('./onUpDown');
+
+var _onUpDown2 = _interopRequireDefault(_onUpDown);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var KEY_ENTER = 'Enter';
+
+var KEY_TAB = 'Tab';
+var KEY_BACKSPACE = 'Backspace';
+var KEY_DOWN = 'ArrowDown';
+var KEY_UP = 'ArrowUp';
+
+/**
+ * User is pressing a key in the editor
+ */
+function onKeyDown(opts, event, change, editor) {
+    // Only handle events in cells
+    if (!(0, _utils.isSelectionInTable)(opts, change.value)) {
+        return undefined;
+    }
+
+    // Build arguments list
+    var args = [event, change, editor, opts];
+
+    switch (event.key) {
+        case KEY_ENTER:
+            if (event.metaKey && opts.exitBlockType) {
+                return _onModEnter2.default.apply(undefined, args);
+            }
+            return _onEnter2.default.apply(undefined, args);
+
+        case KEY_TAB:
+            return _onTab2.default.apply(undefined, args);
+        case KEY_BACKSPACE:
+            return _onBackspace2.default.apply(undefined, args);
+        case KEY_DOWN:
+        case KEY_UP:
+            return _onUpDown2.default.apply(undefined, args);
+        default:
+            return undefined;
+    }
+}
+
+exports.default = onKeyDown;
+},{"../utils":260,"./onBackspace":244,"./onEnter":245,"./onModEnter":247,"./onTab":248,"./onUpDown":249,"slate":273}],247:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _slate = require('slate');
+
+var _utils = require('../utils');
+
+/**
+ * Exit the current table, by inserting a default block after the table.
+ */
+function onModEnter(event, change, editor, opts) {
+    var value = change.value;
+
+    if (!value.isCollapsed) {
+        return undefined;
+    }
+
+    event.preventDefault();
+
+    var exitBlock = _slate.Block.create({
+        type: opts.exitBlockType,
+        nodes: [_slate.Text.create('')]
+    });
+
+    var table = _utils.TablePosition.create(opts, value.document, value.startKey).table;
+    var tableParent = value.document.getParent(table.key);
+    var insertionIndex = tableParent.nodes.indexOf(table) + 1;
+
+    return change.insertNodeByKey(tableParent.key, insertionIndex, exitBlock).collapseToStartOf(exitBlock);
+}
+
+exports.default = onModEnter;
+},{"../utils":260,"slate":273}],248:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _utils = require('../utils');
+
+var _changes = require('../changes');
+
+/**
+ * Select all text of current block.
+ */
+function selectAllText(change) {
+    var value = change.value;
+    var startBlock = value.startBlock;
+
+
+    return change.moveOffsetsTo(0).extend(startBlock.text.length);
+}
+
+/**
+ * Pressing "Tab" moves the cursor to the next cell
+ * and select the whole text
+ */
+
+function onTab(event, change, editor, opts) {
+    event.preventDefault();
+    var value = change.value;
+
+    var direction = event.shiftKey ? -1 : +1;
+
+    // Create new row if needed
+    var startKey = value.startKey,
+        selection = value.selection;
+
+    var pos = _utils.TablePosition.create(opts, value.document, startKey);
+    if (pos.isFirstCell() && direction === -1) {
+        (0, _changes.insertRow)(opts, change, 0);
+    } else if (pos.isLastCell() && direction === 1) {
+        (0, _changes.insertRow)(opts, change);
+    }
+
+    // Move back to initial cell (insertRow moves selection automatically).
+    change.select(selection);
+
+    // Move
+    (0, _changes.moveSelectionBy)(opts, change, direction, 0);
+
+    // Select all cell.
+    return selectAllText(change);
+}
+
+exports.default = onTab;
+},{"../changes":230,"../utils":260,"slate":273}],249:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _utils = require('../utils');
+
+var _changes = require('../changes');
+
+function onUpDown(event, change, editor, opts) {
+    var value = change.value;
+
+    var direction = event.key === 'ArrowUp' ? -1 : +1;
+    var pos = _utils.TablePosition.create(opts, value.document, value.startKey);
+
+    if (pos.isFirstRow() && direction === -1 || pos.isLastRow() && direction === +1) {
+        // Let the default behavior move out of the table
+        return undefined;
+    }
+
+    if (direction === -1 && !pos.isTopOfCell()) {
+        return undefined;
+    }
+
+    if (direction === +1 && !pos.isBottomOfCell()) {
+        return undefined;
+    }
+
+    event.preventDefault();
+
+    (0, _changes.moveSelectionBy)(opts, change, 0, direction);
+
+    return change;
+}
+exports.default = onUpDown;
+},{"../changes":230,"../utils":260,"slate":273}],250:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _options = require('./options');
+
+var _options2 = _interopRequireDefault(_options);
+
+var _core = require('./core');
+
+var _core2 = _interopRequireDefault(_core);
+
+var _handlers = require('./handlers');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ *  Returns the full plugin object (behavior + rendering + schema)
+ */
+function EditTable(
+// The plugin options
+optionsParam) {
+    var opts = new _options2.default(optionsParam || {});
+    var corePlugin = (0, _core2.default)(opts);
+
+    return _extends({}, corePlugin, {
+
+        onKeyDown: _handlers.onKeyDown.bind(null, opts)
+    });
+}
+
+exports.default = EditTable;
+},{"./core":242,"./handlers":243,"./options":251}],251:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _immutable = require('immutable');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * The plugin options
+ */
+var Options = function (_Record) {
+    _inherits(Options, _Record);
+
+    function Options() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
+        _classCallCheck(this, Options);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Options.__proto__ || Object.getPrototypeOf(Options)).call.apply(_ref, [this].concat(args))), _this), _this.isCell = function (node) {
+            return node.object == 'block' && node.type == _this.typeCell;
+        }, _temp), _possibleConstructorReturn(_this, _ret);
+    }
+    // The type of table blocks
+
+    // The type of row blocks
+
+    // The type of cell blocks
+
+    // The default type for blocks in cells
+
+    // The type of block inserted when exiting
+
+
+    /*
+     * Return a node filter to find a cell.
+     */
+
+
+    return Options;
+}((0, _immutable.Record)({
+    typeTable: 'table',
+    typeRow: 'table_row',
+    typeCell: 'table_cell',
+    typeContent: 'paragraph',
+    exitBlockType: 'paragraph'
+}));
+
+exports.default = Options;
+},{"immutable":29}],252:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _immutable = require('immutable');
+
+var _slate = require('slate');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TablePosition = function (_Record) {
+    _inherits(TablePosition, _Record);
+
+    function TablePosition() {
+        _classCallCheck(this, TablePosition);
+
+        return _possibleConstructorReturn(this, (TablePosition.__proto__ || Object.getPrototypeOf(TablePosition)).apply(this, arguments));
+    }
+
+    _createClass(TablePosition, [{
+        key: 'isInCell',
+
+
+        /**
+         * Check to see if this position is within a cell
+         */
+        value: function isInCell() {
+            return Boolean(this.cellBlock);
+        }
+
+        /**
+         * Check to see if this position is within a row
+         */
+
+    }, {
+        key: 'isInRow',
+        value: function isInRow() {
+            return Boolean(this.rowBlock);
+        }
+
+        /**
+         * Check to see if this position is within a table
+         */
+
+    }, {
+        key: 'isInTable',
+        value: function isInTable() {
+            return Boolean(this.tableBlock);
+        }
+
+        /**
+         * Check to see if this position is at the top of the cell.
+         */
+
+    }, {
+        key: 'isTopOfCell',
+        value: function isTopOfCell() {
+            var contentBlock = this.contentBlock,
+                cellBlock = this.cellBlock;
+
+
+            if (!contentBlock || !cellBlock) {
+                return false;
+            }
+
+            var nodes = cellBlock.nodes;
+
+            var index = nodes.findIndex(function (block) {
+                return block.key == contentBlock.key;
+            });
+
+            return index == 0;
+        }
+
+        /**
+         * Check to see if this position is at the bottom of the cell.
+         */
+
+    }, {
+        key: 'isBottomOfCell',
+        value: function isBottomOfCell() {
+            var contentBlock = this.contentBlock,
+                cellBlock = this.cellBlock;
+
+
+            if (!contentBlock || !cellBlock) {
+                return false;
+            }
+
+            var nodes = cellBlock.nodes;
+
+            var index = nodes.findIndex(function (block) {
+                return block.key == contentBlock.key;
+            });
+
+            return index == nodes.size - 1;
+        }
+
+        /**
+         * Get count of columns
+         */
+
+    }, {
+        key: 'getWidth',
+        value: function getWidth() {
+            var table = this.table;
+
+            var rows = table.nodes;
+            var cells = rows.get(0).nodes;
+
+            return cells.size;
+        }
+
+        /**
+         * Get count of rows
+         */
+
+    }, {
+        key: 'getHeight',
+        value: function getHeight() {
+            var table = this.table;
+
+            var rows = table.nodes;
+
+            return rows.size;
+        }
+
+        /**
+         * Get index of current row in the table.
+         */
+
+    }, {
+        key: 'getRowIndex',
+        value: function getRowIndex() {
+            var table = this.table,
+                row = this.row;
+
+            var rows = table.nodes;
+
+            return rows.findIndex(function (x) {
+                return x === row;
+            });
+        }
+
+        /**
+         * Get index of current column in the row.
+         */
+
+    }, {
+        key: 'getColumnIndex',
+        value: function getColumnIndex() {
+            var row = this.row,
+                cell = this.cell;
+
+            var cells = row.nodes;
+
+            return cells.findIndex(function (x) {
+                return x === cell;
+            });
+        }
+
+        /**
+         * True if on first cell of the table
+         */
+
+    }, {
+        key: 'isFirstCell',
+        value: function isFirstCell() {
+            return this.isFirstRow() && this.isFirstColumn();
+        }
+
+        /**
+         * True if on last cell of the table
+         */
+
+    }, {
+        key: 'isLastCell',
+        value: function isLastCell() {
+            return this.isLastRow() && this.isLastColumn();
+        }
+
+        /**
+         * True if on first row
+         */
+
+    }, {
+        key: 'isFirstRow',
+        value: function isFirstRow() {
+            return this.getRowIndex() === 0;
+        }
+
+        /**
+         * True if on last row
+         */
+
+    }, {
+        key: 'isLastRow',
+        value: function isLastRow() {
+            return this.getRowIndex() === this.getHeight() - 1;
+        }
+
+        /**
+         * True if on first column
+         */
+
+    }, {
+        key: 'isFirstColumn',
+        value: function isFirstColumn() {
+            return this.getColumnIndex() === 0;
+        }
+
+        /**
+         * True if on last column
+         */
+
+    }, {
+        key: 'isLastColumn',
+        value: function isLastColumn() {
+            return this.getColumnIndex() === this.getWidth() - 1;
+        }
+    }, {
+        key: 'table',
+        get: function get() {
+            if (!this.tableBlock) {
+                throw new Error('Not in a table');
+            }
+            return this.tableBlock;
+        }
+    }, {
+        key: 'row',
+        get: function get() {
+            if (!this.rowBlock) {
+                throw new Error('Not in a row');
+            }
+            return this.rowBlock;
+        }
+    }, {
+        key: 'cell',
+        get: function get() {
+            if (!this.cellBlock) {
+                throw new Error('Not in a cell');
+            }
+            return this.cellBlock;
+        }
+    }], [{
+        key: 'create',
+
+
+        /**
+         * Create a new instance of a TablePosition from a Slate document
+         * and a node key.
+         */
+
+
+        // Block for current cell
+
+        // Block container for the table
+        value: function create(opts, document, key) {
+            var node = document.getDescendant(key);
+            var ancestors = document.getAncestors(key).push(node);
+            var tableBlock = ancestors.findLast(function (p) {
+                return p.type === opts.typeTable;
+            });
+            var rowBlock = ancestors.findLast(function (p) {
+                return p.type === opts.typeRow;
+            });
+
+            var cellBlock = ancestors.findLast(function (p) {
+                return p.type === opts.typeCell;
+            });
+            var contentBlock = ancestors.skipUntil(function (ancestor) {
+                return ancestor === cellBlock;
+            }).skip(1).first();
+
+            return new TablePosition({
+                tableBlock: tableBlock,
+                rowBlock: rowBlock,
+                cellBlock: cellBlock,
+                contentBlock: contentBlock
+            });
+        }
+
+        // Current content block in the cell
+
+
+        // Block for current row
+
+    }]);
+
+    return TablePosition;
+}((0, _immutable.Record)({
+    tableBlock: null,
+    rowBlock: null,
+    cellBlock: null,
+    contentBlock: null
+}));
+
+exports.default = TablePosition;
+},{"immutable":29,"slate":273}],253:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _slate = require('slate');
+
+/**
+ * Create a new cell
+ */
+function createCell(opts, nodes) {
+    return _slate.Block.create({
+        type: opts.typeCell,
+        nodes: nodes || [createEmptyContent(opts)]
+    });
+}
+
+/**
+ * Create a new default content block
+ */
+
+function createEmptyContent(opts) {
+    return _slate.Block.create({
+        type: opts.typeContent,
+        nodes: [_slate.Text.create()]
+    });
+}
+
+exports.default = createCell;
+},{"slate":273}],254:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _immutable = require('immutable');
+
+var _slate = require('slate');
+
+var _createCell = require('./createCell');
+
+var _createCell2 = _interopRequireDefault(_createCell);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Create a new row block
+ */
+function createRow(opts, columns, getCellContent) {
+    var cellNodes = (0, _immutable.Range)(0, columns).map(function (i) {
+        return (0, _createCell2.default)(opts, getCellContent ? getCellContent(i) : undefined);
+    }).toList();
+
+    return _slate.Block.create({
+        type: opts.typeRow,
+        nodes: cellNodes
+    });
+}
+exports.default = createRow;
+},{"./createCell":253,"immutable":29,"slate":273}],255:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _immutable = require('immutable');
+
+var _slate = require('slate');
+
+var _createRow = require('./createRow');
+
+var _createRow2 = _interopRequireDefault(_createRow);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Create a table
+ */
+function createTable(opts, columns, rows, getCellContent) {
+    var rowNodes = (0, _immutable.Range)(0, rows).map(function (i) {
+        return (0, _createRow2.default)(opts, columns, getCellContent ? getCellContent.bind(null, i) : undefined);
+    }).toList();
+
+    return _slate.Block.create({
+        type: opts.typeTable,
+        nodes: rowNodes
+    });
+}
+exports.default = createTable;
+},{"./createRow":254,"immutable":29,"slate":273}],256:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+/**
+ * Run the given function against each cells of the table
+ */
+function forEachCells(opts,
+// The table
+table, fn) {
+    return table.nodes.forEach(function (row, rowIndex) {
+        return row.nodes.forEach(function (cell, columnIndex) {
+            return fn(cell, rowIndex, columnIndex);
+        });
+    });
+}
+exports.default = forEachCells;
+},{"slate":273}],257:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+require('immutable');
+
+/**
+ * Returns the list of cells at the given column index
+ */
+function getCellsAtColumn(opts,
+// The table
+table, columnIndex) {
+    return table.nodes.map(function (row) {
+        return row.nodes.get(columnIndex);
+    });
+}
+
+exports.default = getCellsAtColumn;
+},{"immutable":29,"slate":273}],258:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+require('immutable');
+
+/**
+ * Returns the list of cells at the given row index
+ */
+function getCellsAtRow(opts,
+// The table
+table, rowIndex) {
+    return table.nodes.get(rowIndex).nodes;
+}
+
+exports.default = getCellsAtRow;
+},{"immutable":29,"slate":273}],259:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _TablePosition = require('./TablePosition');
+
+var _TablePosition2 = _interopRequireDefault(_TablePosition);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * The position of the selection start block, in the current table
+ */
+function getPosition(opts,
+// The current value
+value) {
+    var key = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : value.startKey;
+
+    return _TablePosition2.default.create(opts, value.document, key);
+}
+
+exports.default = getPosition;
+},{"./TablePosition":252,"slate":273}],260:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.createTable = exports.createRow = exports.createCell = exports.TablePosition = exports.isSelectionOutOfTable = exports.isSelectionInTable = exports.getCellsAtColumn = exports.getCellsAtRow = exports.forEachCells = exports.getPosition = undefined;
+
+var _createCell = require('./createCell');
+
+var _createCell2 = _interopRequireDefault(_createCell);
+
+var _createRow = require('./createRow');
+
+var _createRow2 = _interopRequireDefault(_createRow);
+
+var _createTable = require('./createTable');
+
+var _createTable2 = _interopRequireDefault(_createTable);
+
+var _getPosition = require('./getPosition');
+
+var _getPosition2 = _interopRequireDefault(_getPosition);
+
+var _isSelectionInTable = require('./isSelectionInTable');
+
+var _isSelectionInTable2 = _interopRequireDefault(_isSelectionInTable);
+
+var _isSelectionOutOfTable = require('./isSelectionOutOfTable');
+
+var _isSelectionOutOfTable2 = _interopRequireDefault(_isSelectionOutOfTable);
+
+var _TablePosition = require('./TablePosition');
+
+var _TablePosition2 = _interopRequireDefault(_TablePosition);
+
+var _forEachCells = require('./forEachCells');
+
+var _forEachCells2 = _interopRequireDefault(_forEachCells);
+
+var _getCellsAtRow = require('./getCellsAtRow');
+
+var _getCellsAtRow2 = _interopRequireDefault(_getCellsAtRow);
+
+var _getCellsAtColumn = require('./getCellsAtColumn');
+
+var _getCellsAtColumn2 = _interopRequireDefault(_getCellsAtColumn);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.getPosition = _getPosition2.default;
+exports.forEachCells = _forEachCells2.default;
+exports.getCellsAtRow = _getCellsAtRow2.default;
+exports.getCellsAtColumn = _getCellsAtColumn2.default;
+exports.isSelectionInTable = _isSelectionInTable2.default;
+exports.isSelectionOutOfTable = _isSelectionOutOfTable2.default;
+exports.TablePosition = _TablePosition2.default;
+exports.createCell = _createCell2.default;
+exports.createRow = _createRow2.default;
+exports.createTable = _createTable2.default;
+},{"./TablePosition":252,"./createCell":253,"./createRow":254,"./createTable":255,"./forEachCells":256,"./getCellsAtColumn":257,"./getCellsAtRow":258,"./getPosition":259,"./isSelectionInTable":261,"./isSelectionOutOfTable":262}],261:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _TablePosition = require('./TablePosition');
+
+var _TablePosition2 = _interopRequireDefault(_TablePosition);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Is the selection in a table
+ */
+function isSelectionInTable(opts, value) {
+    if (!value.selection.startKey) return false;
+
+    var startKey = value.startKey,
+        endKey = value.endKey;
+
+    var startPosition = _TablePosition2.default.create(opts, value.document, startKey);
+    var endPosition = _TablePosition2.default.create(opts, value.document, endKey);
+
+    // Only handle events in tables
+    if (!startPosition.isInTable() || !endPosition.isInTable()) {
+        return false;
+    }
+
+    // Inside the same table
+    return startPosition.table === endPosition.table;
+}
+
+exports.default = isSelectionInTable;
+},{"./TablePosition":252}],262:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _TablePosition = require('./TablePosition');
+
+var _TablePosition2 = _interopRequireDefault(_TablePosition);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Are the selection start and end outside a table.
+ */
+function isSelectionOutOfTable(opts, value) {
+    if (!value.selection.startKey) return false;
+
+    var startKey = value.startKey,
+        endKey = value.endKey;
+
+
+    var startPosition = _TablePosition2.default.create(opts, value.document, startKey);
+    var endPosition = _TablePosition2.default.create(opts, value.document, endKey);
+
+    // Only handle events in tables
+    return !startPosition.isInTable() && !endPosition.isInTable();
+}
+
+exports.default = isSelectionOutOfTable;
+},{"./TablePosition":252}],263:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.validateNode = exports.schema = undefined;
+
+var _schema = require('./schema');
+
+var _schema2 = _interopRequireDefault(_schema);
+
+var _validateNode = require('./validateNode');
+
+var _validateNode2 = _interopRequireDefault(_validateNode);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.schema = _schema2.default;
+exports.validateNode = _validateNode2.default;
+},{"./schema":264,"./validateNode":265}],264:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _slate = require('slate');
+
+var _slateSchemaViolations = require('slate-schema-violations');
+
+var _utils = require('../utils');
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/*
+ * Returns a schema definition for the plugin
+ */
+function schema(opts) {
+    var _blocks;
+
+    return {
+        blocks: (_blocks = {}, _defineProperty(_blocks, opts.typeTable, {
+            nodes: [{ types: [opts.typeRow] }]
+        }), _defineProperty(_blocks, opts.typeRow, {
+            nodes: [{ types: [opts.typeCell] }],
+            parent: { types: [opts.typeTable] },
+            normalize: function normalize(change, violation, context) {
+                switch (violation) {
+                    case _slateSchemaViolations.CHILD_TYPE_INVALID:
+                        return onlyCellsInRow(opts, change, context);
+                    case _slateSchemaViolations.PARENT_TYPE_INVALID:
+                        return rowOnlyInTable(opts, change, context);
+                    default:
+                        return undefined;
+                }
+            }
+        }), _defineProperty(_blocks, opts.typeCell, {
+            nodes: [{ objects: ['block'] }],
+            parent: { types: [opts.typeRow] },
+            normalize: function normalize(change, violation, context) {
+                switch (violation) {
+                    case _slateSchemaViolations.CHILD_OBJECT_INVALID:
+                        return onlyBlocksInCell(opts, change, context);
+                    case _slateSchemaViolations.PARENT_TYPE_INVALID:
+                        return cellOnlyInRow(opts, change, context);
+                    default:
+                        return undefined;
+                }
+            }
+        }), _blocks)
+    };
+}
+
+/*
+ * A row's children must be cells.
+ * If they're not then we wrap them within a cell.
+ */
+function onlyCellsInRow(opts, change, context) {
+    var cell = (0, _utils.createCell)(opts, []);
+    var index = context.node.nodes.findIndex(function (child) {
+        return child.key === context.child.key;
+    });
+    change.insertNodeByKey(context.node.key, index, cell, { normalize: false });
+    change.moveNodeByKey(context.child.key, cell.key, 0, { normalize: false });
+}
+
+/*
+ * Rows can't live outside a table, if one is found then we wrap it within a table.
+ */
+function rowOnlyInTable(opts, change, context) {
+    return change.wrapBlockByKey(context.node.key, opts.typeTable);
+}
+
+/*
+ * A cell's children must be "block"s.
+ * If they're not then we wrap them within a block with a type of opts.typeContent
+ */
+function onlyBlocksInCell(opts, change, context) {
+    var block = _slate.Block.create({
+        type: opts.typeContent
+    });
+    change.insertNodeByKey(context.node.key, 0, block, { normalize: false });
+
+    var inlines = context.node.nodes.filter(function (node) {
+        return node.object !== 'block';
+    });
+    inlines.forEach(function (inline, index) {
+        change.moveNodeByKey(inline.key, block.key, index, {
+            normalize: false
+        });
+    });
+}
+
+/*
+ * Cells can't live outside a row, if one is found then we wrap it within a row.
+ */
+function cellOnlyInRow(opts, change, context) {
+    return change.wrapBlockByKey(context.node.key, opts.typeRow);
+}
+
+exports.default = schema;
+},{"../utils":260,"slate":273,"slate-schema-violations":272}],265:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _utils = require('../utils');
+
+/*
+ * Ensure each row has the same number of columns.
+ */
+function validateNode(opts) {
+    var isRow = function isRow(node) {
+        return node.type === opts.typeRow;
+    };
+    var isCell = function isCell(node) {
+        return node.type === opts.typeCell;
+    };
+    var countCells = function countCells(row) {
+        return row.nodes.count(isCell);
+    };
+
+    return function (node) {
+        if (node.type !== opts.typeTable) {
+            return undefined;
+        }
+
+        var rows = node.nodes.filter(isRow);
+        var maxColumns = Math.max(
+        // Minimum 1 column
+        1, rows.map(countCells).max());
+        var rowsMissingColumns = rows.filter(function (row) {
+            return countCells(row) < maxColumns;
+        });
+
+        if (rowsMissingColumns.isEmpty()) {
+            return undefined;
+        }
+
+        return function (change) {
+            rowsMissingColumns.forEach(function (row) {
+                var numberOfCellsToAdd = maxColumns - row.nodes.size;
+                var cells = Array.from({ length: numberOfCellsToAdd }).map(function () {
+                    return (0, _utils.createCell)(opts);
+                });
+                cells.forEach(function (cell) {
+                    return change.insertNodeByKey(row.key, row.nodes.size, cell, {
+                        normalize: false
+                    });
+                });
+            });
+        };
+    };
+}
+
+exports.default = validateNode;
+},{"../utils":260}],266:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var isHotkey = require('is-hotkey');
@@ -34808,7 +36737,7 @@ var index = {
 exports.default = index;
 
 
-},{"is-hotkey":31,"slate-dev-environment":227}],230:[function(require,module,exports){
+},{"is-hotkey":31,"slate-dev-environment":227}],267:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -34925,7 +36854,7 @@ var index = {
 exports.default = index;
 
 
-},{"immutable":29,"slate":236}],231:[function(require,module,exports){
+},{"immutable":29,"slate":273}],268:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -35056,7 +36985,7 @@ var Types = {
 exports.default = Types;
 
 
-},{"slate":236}],232:[function(require,module,exports){
+},{"slate":273}],269:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -39388,7 +41317,7 @@ exports.BeforePlugin = BeforePlugin;
 exports.default = index;
 
 
-},{"debug":233,"get-window":27,"immutable":29,"lodash/throttle":204,"prop-types":214,"react":224,"react-dom":218,"react-immutable-proptypes":220,"react-portal":221,"selection-is-backward":225,"slate":236,"slate-base64-serializer":226,"slate-dev-environment":227,"slate-dev-logger":228,"slate-hotkeys":229,"slate-plain-serializer":230,"slate-prop-types":231}],233:[function(require,module,exports){
+},{"debug":270,"get-window":27,"immutable":29,"lodash/throttle":204,"prop-types":214,"react":224,"react-dom":218,"react-immutable-proptypes":220,"react-portal":221,"selection-is-backward":225,"slate":273,"slate-base64-serializer":226,"slate-dev-environment":227,"slate-dev-logger":228,"slate-hotkeys":266,"slate-plain-serializer":267,"slate-prop-types":268}],270:[function(require,module,exports){
 (function (process){
 /**
  * This is the web browser implementation of `debug()`.
@@ -39587,7 +41516,7 @@ function localstorage() {
 }
 
 }).call(this,require('_process'))
-},{"./debug":234,"_process":210}],234:[function(require,module,exports){
+},{"./debug":271,"_process":210}],271:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -39814,7 +41743,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":208}],235:[function(require,module,exports){
+},{"ms":208}],272:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -39856,7 +41785,7 @@ exports.PARENT_OBJECT_INVALID = PARENT_OBJECT_INVALID;
 exports.PARENT_TYPE_INVALID = PARENT_TYPE_INVALID;
 
 
-},{}],236:[function(require,module,exports){
+},{}],273:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -53655,11 +55584,11 @@ exports.useMemoization = useMemoization;
 exports.default = index;
 
 
-},{"debug":237,"direction":9,"esrever":11,"immutable":29,"is-empty":30,"is-plain-object":33,"lodash/isEqual":184,"lodash/mergeWith":198,"lodash/omit":200,"lodash/pick":201,"slate-dev-logger":228,"slate-schema-violations":235}],237:[function(require,module,exports){
-arguments[4][233][0].apply(exports,arguments)
-},{"./debug":238,"_process":210,"dup":233}],238:[function(require,module,exports){
-arguments[4][234][0].apply(exports,arguments)
-},{"dup":234,"ms":208}],239:[function(require,module,exports){
+},{"debug":274,"direction":9,"esrever":11,"immutable":29,"is-empty":30,"is-plain-object":33,"lodash/isEqual":184,"lodash/mergeWith":198,"lodash/omit":200,"lodash/pick":201,"slate-dev-logger":228,"slate-schema-violations":272}],274:[function(require,module,exports){
+arguments[4][270][0].apply(exports,arguments)
+},{"./debug":275,"_process":210,"dup":270}],275:[function(require,module,exports){
+arguments[4][271][0].apply(exports,arguments)
+},{"dup":271,"ms":208}],276:[function(require,module,exports){
 (function (factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? (module['exports'] = factory()) :
 		typeof define === 'function' && define['amd'] ? define(factory()) :
@@ -53709,12 +55638,83 @@ arguments[4][234][0].apply(exports,arguments)
 	}
 }))
 
-},{}],240:[function(require,module,exports){
+},{}],277:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('slate');
+
+var _slateSchemaViolations = require('slate-schema-violations');
+
+var _slateEditTable = require('slate-edit-table');
+
+var _slateEditTable2 = _interopRequireDefault(_slateEditTable);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/*
+ * This file contains an example of cell align management extension.
+ */
+
+var tablePlugin = (0, _slateEditTable2.default)({
+    typeTable: 'table',
+    typeRow: 'table_row',
+    typeCell: 'table_cell',
+    typeContent: 'paragraph'
+});
+
+/*
+ * Set align data for the current column
+ */
+
+function setColumnAlign(change, align) {
+    var pos = tablePlugin.utils.getPosition(change.value);
+    var columnCells = tablePlugin.utils.getCellsAtColumn(pos.table, pos.getColumnIndex());
+    columnCells.forEach(function (cell) {
+        change.setNodeByKey(cell.key, { data: { align: align } });
+    });
+    return change;
+}
+
+var alignPlugin = {
+    schema: {
+        blocks: {
+            table_cell: {
+                data: {
+                    // Make sure cells have an alignment
+                    align: function align(_align) {
+                        return ['left', 'center', 'right'].includes(_align);
+                    }
+                },
+                normalize: function normalize(change, violation, context) {
+                    if (violation === _slateSchemaViolations.NODE_DATA_INVALID) {
+                        change.setNodeByKey(context.node.key, {
+                            data: context.node.data.set('align', 'left')
+                        });
+                    }
+                }
+            }
+        }
+    },
+
+    changes: {
+        setColumnAlign: setColumnAlign
+    }
+};
+
+exports.default = alignPlugin;
+
+},{"slate":273,"slate-edit-table":250,"slate-schema-violations":272}],278:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -53722,13 +55722,25 @@ var _slateReact = require('slate-react');
 
 var _slate = require('slate');
 
+var _slateEditTable = require('slate-edit-table');
+
+var _slateEditTable2 = _interopRequireDefault(_slateEditTable);
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _isHotkey = require('is-hotkey');
 
 var _components = require('./components');
+
+var _aligns = require('./aligns');
+
+var _aligns2 = _interopRequireDefault(_aligns);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -53737,6 +55749,170 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var tablePlugin = (0, _slateEditTable2.default)({
+  typeTable: 'table',
+  typeRow: 'table_row',
+  typeCell: 'table_cell',
+  typeContent: 'paragraph'
+});
+
+function renderNode(props) {
+  switch (props.node.type) {
+    case 'table':
+      return _react2.default.createElement(Table, props);
+    case 'table_row':
+      return _react2.default.createElement(TableRow, props);
+    case 'table_cell':
+      return _react2.default.createElement(TableCell, props);
+    case 'paragraph':
+      return _react2.default.createElement(Paragraph, props);
+    case 'heading':
+      return _react2.default.createElement(
+        'h1',
+        props.attributes,
+        props.children
+      );
+    default:
+      return null;
+  }
+}
+
+var plugins = [tablePlugin, _aligns2.default, { renderNode: renderNode }];
+
+var Table = function (_React$Component) {
+  _inherits(Table, _React$Component);
+
+  function Table() {
+    _classCallCheck(this, Table);
+
+    return _possibleConstructorReturn(this, (Table.__proto__ || Object.getPrototypeOf(Table)).apply(this, arguments));
+  }
+
+  _createClass(Table, [{
+    key: 'getChildContext',
+    value: function getChildContext() {
+      return { isInTable: true };
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _props = this.props,
+          attributes = _props.attributes,
+          children = _props.children;
+
+      return _react2.default.createElement(
+        'table',
+        null,
+        _react2.default.createElement(
+          'tbody',
+          attributes,
+          children
+        )
+      );
+    }
+  }]);
+
+  return Table;
+}(_react2.default.Component);
+
+Table.childContextTypes = {
+  isInTable: _propTypes2.default.bool
+};
+
+var TableRow = function (_React$Component2) {
+  _inherits(TableRow, _React$Component2);
+
+  function TableRow() {
+    _classCallCheck(this, TableRow);
+
+    return _possibleConstructorReturn(this, (TableRow.__proto__ || Object.getPrototypeOf(TableRow)).apply(this, arguments));
+  }
+
+  _createClass(TableRow, [{
+    key: 'render',
+    value: function render() {
+      var _props2 = this.props,
+          attributes = _props2.attributes,
+          children = _props2.children;
+
+      return _react2.default.createElement(
+        'tr',
+        attributes,
+        children
+      );
+    }
+  }]);
+
+  return TableRow;
+}(_react2.default.Component);
+
+var TableCell = function (_React$Component3) {
+  _inherits(TableCell, _React$Component3);
+
+  function TableCell() {
+    _classCallCheck(this, TableCell);
+
+    return _possibleConstructorReturn(this, (TableCell.__proto__ || Object.getPrototypeOf(TableCell)).apply(this, arguments));
+  }
+
+  _createClass(TableCell, [{
+    key: 'render',
+    value: function render() {
+      var _props3 = this.props,
+          attributes = _props3.attributes,
+          children = _props3.children,
+          node = _props3.node;
+
+
+      var textAlign = node.get('data').get('align', 'left');
+
+      return _react2.default.createElement(
+        'td',
+        _extends({ style: { textAlign: textAlign } }, attributes),
+        children
+      );
+    }
+  }]);
+
+  return TableCell;
+}(_react2.default.Component);
+
+var Paragraph = function (_React$Component4) {
+  _inherits(Paragraph, _React$Component4);
+
+  function Paragraph() {
+    _classCallCheck(this, Paragraph);
+
+    return _possibleConstructorReturn(this, (Paragraph.__proto__ || Object.getPrototypeOf(Paragraph)).apply(this, arguments));
+  }
+
+  _createClass(Paragraph, [{
+    key: 'render',
+    value: function render() {
+      var _props4 = this.props,
+          attributes = _props4.attributes,
+          children = _props4.children;
+      var isInTable = this.context.isInTable;
+
+
+      var style = isInTable ? { margin: 0 } : {};
+
+      return _react2.default.createElement(
+        'p',
+        _extends({ style: style }, attributes),
+        children
+      );
+    }
+  }]);
+
+  return Paragraph;
+}(_react2.default.Component);
+
+Paragraph.contextTypes = {
+  isInTable: _propTypes2.default.bool
+};
+
 
 var initialValue = {
   "document": {
@@ -53832,13 +56008,13 @@ var isCodeHotkey = (0, _isHotkey.isKeyHotkey)('mod+`');
  * @type {Component}
  */
 
-var RichTextExample = function (_React$Component) {
-  _inherits(RichTextExample, _React$Component);
+var RichTextExample = function (_React$Component5) {
+  _inherits(RichTextExample, _React$Component5);
 
   function RichTextExample() {
     var _ref;
 
-    var _temp, _this, _ret;
+    var _temp, _this5, _ret;
 
     _classCallCheck(this, RichTextExample);
 
@@ -53846,7 +56022,7 @@ var RichTextExample = function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = RichTextExample.__proto__ || Object.getPrototypeOf(RichTextExample)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+    return _ret = (_temp = (_this5 = _possibleConstructorReturn(this, (_ref = RichTextExample.__proto__ || Object.getPrototypeOf(RichTextExample)).call.apply(_ref, [this].concat(args))), _this5), _this5.state = {
       value: _slate.Value.fromJSON(initialValue)
 
       /**
@@ -53856,27 +56032,53 @@ var RichTextExample = function (_React$Component) {
        * @return {Boolean}
        */
 
-    }, _this.hasMark = function (type) {
-      var value = _this.state.value;
+    }, _this5.hasMark = function (type) {
+      var value = _this5.state.value;
 
       return value.activeMarks.some(function (mark) {
         return mark.type == type;
       });
-    }, _this.hasBlock = function (type) {
-      var value = _this.state.value;
+    }, _this5.setEditorComponent = function (ref) {
+      _this5.editorREF = ref;
+      _this5.submitChange = ref.change;
+    }, _this5.onInsertTable = function (event) {
+      event.preventDefault();
+      _this5.submitChange(tablePlugin.changes.insertTable);
+    }, _this5.onInsertColumn = function (event) {
+      event.preventDefault();
+      _this5.submitChange(tablePlugin.changes.insertColumn);
+    }, _this5.onInsertRow = function (event) {
+      event.preventDefault();
+      _this5.submitChange(tablePlugin.changes.insertRow);
+    }, _this5.onRemoveColumn = function (event) {
+      event.preventDefault();
+      _this5.submitChange(tablePlugin.changes.removeColumn);
+    }, _this5.onRemoveRow = function (event) {
+      event.preventDefault();
+      _this5.submitChange(tablePlugin.changes.removeRow);
+    }, _this5.onRemoveTable = function (event) {
+      event.preventDefault();
+      _this5.submitChange(tablePlugin.changes.removeTable);
+    }, _this5.onSetAlign = function (event, align) {
+      event.preventDefault();
+      _this5.submitChange(function (change) {
+        return _aligns2.default.changes.setColumnAlign(change, align);
+      });
+    }, _this5.hasBlock = function (type) {
+      var value = _this5.state.value;
 
       return value.blocks.some(function (node) {
         return node.type == type;
       });
-    }, _this.renderMarkButton = function (type, icon) {
-      var isActive = _this.hasMark(type);
+    }, _this5.renderMarkButton = function (type, icon) {
+      var isActive = _this5.hasMark(type);
 
       return _react2.default.createElement(
         _components.Button,
         {
           active: isActive,
           onMouseDown: function onMouseDown(event) {
-            return _this.onClickMark(event, type);
+            return _this5.onClickMark(event, type);
           }
         },
         _react2.default.createElement(
@@ -53885,14 +56087,14 @@ var RichTextExample = function (_React$Component) {
           icon
         )
       );
-    }, _this.renderBlockButton = function (type, icon) {
-      var isActive = _this.hasBlock(type);
+    }, _this5.renderBlockButton = function (type, icon) {
+      var isActive = _this5.hasBlock(type);
 
       if (['numbered-list', 'bulleted-list'].includes(type)) {
-        var value = _this.state.value;
+        var value = _this5.state.value;
 
         var parent = value.document.getParent(value.blocks.first().key);
-        isActive = _this.hasBlock('list-item') && parent && parent.type === type;
+        isActive = _this5.hasBlock('list-item') && parent && parent.type === type;
       }
 
       return _react2.default.createElement(
@@ -53900,7 +56102,7 @@ var RichTextExample = function (_React$Component) {
         {
           active: isActive,
           onMouseDown: function onMouseDown(event) {
-            return _this.onClickBlock(event, type);
+            return _this5.onClickBlock(event, type);
           }
         },
         _react2.default.createElement(
@@ -53909,7 +56111,7 @@ var RichTextExample = function (_React$Component) {
           icon
         )
       );
-    }, _this.renderNode = function (props) {
+    }, _this5.renderNode = function (props) {
       var attributes = props.attributes,
           children = props.children,
           node = props.node;
@@ -53953,7 +56155,7 @@ var RichTextExample = function (_React$Component) {
             children
           );
       }
-    }, _this.renderMark = function (props) {
+    }, _this5.renderMark = function (props) {
       var children = props.children,
           mark = props.mark,
           attributes = props.attributes;
@@ -53985,11 +56187,11 @@ var RichTextExample = function (_React$Component) {
             children
           );
       }
-    }, _this.onChange = function (_ref2) {
+    }, _this5.onChange = function (_ref2) {
       var value = _ref2.value;
 
-      _this.setState({ value: value });
-    }, _this.onKeyDown = function (event, change) {
+      _this5.setState({ value: value });
+    }, _this5.onKeyDown = function (event, change) {
       var mark = void 0;
 
       if (isBoldHotkey(event)) {
@@ -54007,15 +56209,15 @@ var RichTextExample = function (_React$Component) {
       event.preventDefault();
       change.toggleMark(mark);
       return true;
-    }, _this.onClickMark = function (event, type) {
+    }, _this5.onClickMark = function (event, type) {
       event.preventDefault();
-      var value = _this.state.value;
+      var value = _this5.state.value;
 
       var change = value.change().toggleMark(type);
-      _this.onChange(change);
-    }, _this.onClickBlock = function (event, type) {
+      _this5.onChange(change);
+    }, _this5.onClickBlock = function (event, type) {
       event.preventDefault();
-      var value = _this.state.value;
+      var value = _this5.state.value;
 
       var change = value.change();
       var document = value.document;
@@ -54023,8 +56225,8 @@ var RichTextExample = function (_React$Component) {
       // Handle everything but list buttons.
 
       if (type != 'bulleted-list' && type != 'numbered-list') {
-        var isActive = _this.hasBlock(type);
-        var isList = _this.hasBlock('list-item');
+        var isActive = _this5.hasBlock(type);
+        var isList = _this5.hasBlock('list-item');
 
         if (isList) {
           change.setBlocks(isActive ? DEFAULT_NODE : type).unwrapBlock('bulleted-list').unwrapBlock('numbered-list');
@@ -54033,7 +56235,7 @@ var RichTextExample = function (_React$Component) {
         }
       } else {
         // Handle the extra wrapping required for list buttons.
-        var _isList = _this.hasBlock('list-item');
+        var _isList = _this5.hasBlock('list-item');
         var isType = value.blocks.some(function (block) {
           return !!document.getClosest(block.key, function (parent) {
             return parent.type == type;
@@ -54049,8 +56251,8 @@ var RichTextExample = function (_React$Component) {
         }
       }
 
-      _this.onChange(change);
-    }, _temp), _possibleConstructorReturn(_this, _ret);
+      _this5.onChange(change);
+    }, _temp), _possibleConstructorReturn(_this5, _ret);
   }
   /**
    * Deserialize the initial editor value.
@@ -54058,14 +56260,86 @@ var RichTextExample = function (_React$Component) {
    * @type {Object}
    */
 
-  /**
-   * Check if the any of the currently selected blocks are of `type`.
-   *
-   * @param {String} type
-   * @return {Boolean}
-   */
 
   _createClass(RichTextExample, [{
+    key: 'renderTableToolbar',
+    value: function renderTableToolbar() {
+      var _this6 = this;
+
+      return _react2.default.createElement(
+        'div',
+        { className: 'toolbar' },
+        _react2.default.createElement(
+          'button',
+          { onMouseDown: this.onInsertColumn },
+          'Insert Column'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onMouseDown: this.onInsertRow },
+          'Insert Row'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onMouseDown: this.onRemoveColumn },
+          'Remove Column'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onMouseDown: this.onRemoveRow },
+          'Remove Row'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onMouseDown: this.onRemoveTable },
+          'Remove Table'
+        ),
+        _react2.default.createElement('br', null),
+        _react2.default.createElement(
+          'button',
+          { onMouseDown: function onMouseDown(e) {
+              return _this6.onSetAlign(e, 'left');
+            } },
+          'Set align left'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onMouseDown: function onMouseDown(e) {
+              return _this6.onSetAlign(e, 'center');
+            } },
+          'Set align center'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onMouseDown: function onMouseDown(e) {
+              return _this6.onSetAlign(e, 'right');
+            } },
+          'Set align right'
+        )
+      );
+    }
+  }, {
+    key: 'renderNormalToolbar',
+    value: function renderNormalToolbar() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'toolbar' },
+        _react2.default.createElement(
+          'button',
+          { onClick: this.onInsertTable },
+          'Insert Table'
+        )
+      );
+    }
+
+    /**
+     * Check if the any of the currently selected blocks are of `type`.
+     *
+     * @param {String} type
+     * @return {Boolean}
+     */
+
+  }, {
     key: 'render',
 
 
@@ -54076,6 +56350,11 @@ var RichTextExample = function (_React$Component) {
      */
 
     value: function render() {
+      var value = this.state.value;
+
+      var isInTable = tablePlugin.utils.isSelectionInTable(value);
+      var isOutTable = tablePlugin.utils.isSelectionOutOfTable(value);
+
       return _react2.default.createElement(
         'div',
         null,
@@ -54090,7 +56369,9 @@ var RichTextExample = function (_React$Component) {
           this.renderBlockButton('heading-two', 'looks_two'),
           this.renderBlockButton('block-quote', 'format_quote'),
           this.renderBlockButton('numbered-list', 'format_list_numbered'),
-          this.renderBlockButton('bulleted-list', 'format_list_bulleted')
+          this.renderBlockButton('bulleted-list', 'format_list_bulleted'),
+          isInTable ? this.renderTableToolbar() : null,
+          isOutTable ? this.renderNormalToolbar() : null
         ),
         _react2.default.createElement(_slateReact.Editor, {
           spellCheck: true,
@@ -54100,7 +56381,9 @@ var RichTextExample = function (_React$Component) {
           onChange: this.onChange,
           onKeyDown: this.onKeyDown,
           renderNode: this.renderNode,
-          renderMark: this.renderMark
+          renderMark: this.renderMark,
+          ref: this.setEditorComponent,
+          plugins: plugins
         })
       );
     }
@@ -54174,7 +56457,7 @@ var RichTextExample = function (_React$Component) {
 
 exports.default = RichTextExample;
 
-},{"./components":241,"is-hotkey":31,"react":224,"slate":236,"slate-react":232}],241:[function(require,module,exports){
+},{"./aligns":277,"./components":279,"is-hotkey":31,"prop-types":214,"react":224,"slate":273,"slate-edit-table":250,"slate-react":269}],279:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
