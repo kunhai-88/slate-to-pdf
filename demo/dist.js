@@ -55742,13 +55742,22 @@ var _aligns = require('./aligns');
 
 var _aligns2 = _interopRequireDefault(_aligns);
 
+var _stateToPdfMake = require('./state-to-pdf-make');
+
+var _stateToPdfMake2 = _interopRequireDefault(_stateToPdfMake);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var font = 'SourceHanSerifCN';
+var ttf = 'SourceHanSerifCN-Regular.ttf';
 
 var tablePlugin = (0, _slateEditTable2.default)({
   typeTable: 'table',
@@ -56011,260 +56020,40 @@ var isCodeHotkey = (0, _isHotkey.isKeyHotkey)('mod+`');
 var RichTextExample = function (_React$Component5) {
   _inherits(RichTextExample, _React$Component5);
 
-  function RichTextExample() {
-    var _ref;
-
-    var _temp, _this5, _ret;
-
-    _classCallCheck(this, RichTextExample);
-
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    return _ret = (_temp = (_this5 = _possibleConstructorReturn(this, (_ref = RichTextExample.__proto__ || Object.getPrototypeOf(RichTextExample)).call.apply(_ref, [this].concat(args))), _this5), _this5.state = {
-      value: _slate.Value.fromJSON(initialValue)
-
-      /**
-       * Check if the current selection has a mark with `type` in it.
-       *
-       * @param {String} type
-       * @return {Boolean}
-       */
-
-    }, _this5.hasMark = function (type) {
-      var value = _this5.state.value;
-
-      return value.activeMarks.some(function (mark) {
-        return mark.type == type;
-      });
-    }, _this5.setEditorComponent = function (ref) {
-      _this5.editorREF = ref;
-      _this5.submitChange = ref.change;
-    }, _this5.onInsertTable = function (event) {
-      event.preventDefault();
-      _this5.submitChange(tablePlugin.changes.insertTable);
-    }, _this5.onInsertColumn = function (event) {
-      event.preventDefault();
-      _this5.submitChange(tablePlugin.changes.insertColumn);
-    }, _this5.onInsertRow = function (event) {
-      event.preventDefault();
-      _this5.submitChange(tablePlugin.changes.insertRow);
-    }, _this5.onRemoveColumn = function (event) {
-      event.preventDefault();
-      _this5.submitChange(tablePlugin.changes.removeColumn);
-    }, _this5.onRemoveRow = function (event) {
-      event.preventDefault();
-      _this5.submitChange(tablePlugin.changes.removeRow);
-    }, _this5.onRemoveTable = function (event) {
-      event.preventDefault();
-      _this5.submitChange(tablePlugin.changes.removeTable);
-    }, _this5.onSetAlign = function (event, align) {
-      event.preventDefault();
-      _this5.submitChange(function (change) {
-        return _aligns2.default.changes.setColumnAlign(change, align);
-      });
-    }, _this5.onExport = function (event) {
-      var value = _this5.state.value;
-
-      console.log(value.toJS());
-      console.log(value.toJSON());
-    }, _this5.hasBlock = function (type) {
-      var value = _this5.state.value;
-
-      return value.blocks.some(function (node) {
-        return node.type == type;
-      });
-    }, _this5.renderMarkButton = function (type, icon) {
-      var isActive = _this5.hasMark(type);
-
-      return _react2.default.createElement(
-        _components.Button,
-        {
-          active: isActive,
-          onMouseDown: function onMouseDown(event) {
-            return _this5.onClickMark(event, type);
-          }
-        },
-        _react2.default.createElement(
-          _components.Icon,
-          null,
-          icon
-        )
-      );
-    }, _this5.renderBlockButton = function (type, icon) {
-      var isActive = _this5.hasBlock(type);
-
-      if (['numbered-list', 'bulleted-list'].includes(type)) {
-        var value = _this5.state.value;
-
-        var parent = value.document.getParent(value.blocks.first().key);
-        isActive = _this5.hasBlock('list-item') && parent && parent.type === type;
-      }
-
-      return _react2.default.createElement(
-        _components.Button,
-        {
-          active: isActive,
-          onMouseDown: function onMouseDown(event) {
-            return _this5.onClickBlock(event, type);
-          }
-        },
-        _react2.default.createElement(
-          _components.Icon,
-          null,
-          icon
-        )
-      );
-    }, _this5.renderNode = function (props) {
-      var attributes = props.attributes,
-          children = props.children,
-          node = props.node;
-
-
-      switch (node.type) {
-        case 'block-quote':
-          return _react2.default.createElement(
-            'blockquote',
-            attributes,
-            children
-          );
-        case 'bulleted-list':
-          return _react2.default.createElement(
-            'ul',
-            attributes,
-            children
-          );
-        case 'heading-one':
-          return _react2.default.createElement(
-            'h1',
-            attributes,
-            children
-          );
-        case 'heading-two':
-          return _react2.default.createElement(
-            'h2',
-            attributes,
-            children
-          );
-        case 'list-item':
-          return _react2.default.createElement(
-            'li',
-            attributes,
-            children
-          );
-        case 'numbered-list':
-          return _react2.default.createElement(
-            'ol',
-            attributes,
-            children
-          );
-      }
-    }, _this5.renderMark = function (props) {
-      var children = props.children,
-          mark = props.mark,
-          attributes = props.attributes;
-
-
-      switch (mark.type) {
-        case 'bold':
-          return _react2.default.createElement(
-            'strong',
-            attributes,
-            children
-          );
-        case 'code':
-          return _react2.default.createElement(
-            'code',
-            attributes,
-            children
-          );
-        case 'italic':
-          return _react2.default.createElement(
-            'em',
-            attributes,
-            children
-          );
-        case 'underlined':
-          return _react2.default.createElement(
-            'u',
-            attributes,
-            children
-          );
-      }
-    }, _this5.onChange = function (_ref2) {
-      var value = _ref2.value;
-
-      _this5.setState({ value: value });
-    }, _this5.onKeyDown = function (event, change) {
-      var mark = void 0;
-
-      if (isBoldHotkey(event)) {
-        mark = 'bold';
-      } else if (isItalicHotkey(event)) {
-        mark = 'italic';
-      } else if (isUnderlinedHotkey(event)) {
-        mark = 'underlined';
-      } else if (isCodeHotkey(event)) {
-        mark = 'code';
-      } else {
-        return;
-      }
-
-      event.preventDefault();
-      change.toggleMark(mark);
-      return true;
-    }, _this5.onClickMark = function (event, type) {
-      event.preventDefault();
-      var value = _this5.state.value;
-
-      var change = value.change().toggleMark(type);
-      _this5.onChange(change);
-    }, _this5.onClickBlock = function (event, type) {
-      event.preventDefault();
-      var value = _this5.state.value;
-
-      var change = value.change();
-      var document = value.document;
-
-      // Handle everything but list buttons.
-
-      if (type != 'bulleted-list' && type != 'numbered-list') {
-        var isActive = _this5.hasBlock(type);
-        var isList = _this5.hasBlock('list-item');
-
-        if (isList) {
-          change.setBlocks(isActive ? DEFAULT_NODE : type).unwrapBlock('bulleted-list').unwrapBlock('numbered-list');
-        } else {
-          change.setBlocks(isActive ? DEFAULT_NODE : type);
-        }
-      } else {
-        // Handle the extra wrapping required for list buttons.
-        var _isList = _this5.hasBlock('list-item');
-        var isType = value.blocks.some(function (block) {
-          return !!document.getClosest(block.key, function (parent) {
-            return parent.type == type;
-          });
-        });
-
-        if (_isList && isType) {
-          change.setBlocks(DEFAULT_NODE).unwrapBlock('bulleted-list').unwrapBlock('numbered-list');
-        } else if (_isList) {
-          change.unwrapBlock(type == 'bulleted-list' ? 'numbered-list' : 'bulleted-list').wrapBlock(type);
-        } else {
-          change.setBlocks('list-item').wrapBlock(type);
-        }
-      }
-
-      _this5.onChange(change);
-    }, _temp), _possibleConstructorReturn(_this5, _ret);
-  }
   /**
    * Deserialize the initial editor value.
    *
    * @type {Object}
    */
+  function RichTextExample(props) {
+    _classCallCheck(this, RichTextExample);
 
+    var _this5 = _possibleConstructorReturn(this, (RichTextExample.__proto__ || Object.getPrototypeOf(RichTextExample)).call(this, props));
+
+    _initialiseProps.call(_this5);
+
+    _this5.state = {
+      value: _slate.Value.fromJSON(initialValue)
+    };
+
+    if (window.pdfMake) {
+      console.log('333');
+      window.pdfMake.fonts = _defineProperty({}, font, {
+        normal: ttf,
+        bold: 'SourceHanSerifCN-Bold.ttf',
+        italics: ttf,
+        bolditalics: ttf
+      });
+    }
+    return _this5;
+  }
+
+  /**
+   * Check if the current selection has a mark with `type` in it.
+   *
+   * @param {String} type
+   * @return {Boolean}
+   */
 
   _createClass(RichTextExample, [{
     key: 'renderTableToolbar',
@@ -56464,9 +56253,287 @@ var RichTextExample = function (_React$Component5) {
  * Export.
  */
 
+var _initialiseProps = function _initialiseProps() {
+  var _this7 = this;
+
+  this.hasMark = function (type) {
+    var value = _this7.state.value;
+
+    return value.activeMarks.some(function (mark) {
+      return mark.type == type;
+    });
+  };
+
+  this.setEditorComponent = function (ref) {
+    _this7.editorREF = ref;
+    _this7.submitChange = ref.change;
+  };
+
+  this.onInsertTable = function (event) {
+    event.preventDefault();
+    _this7.submitChange(tablePlugin.changes.insertTable);
+  };
+
+  this.onInsertColumn = function (event) {
+    event.preventDefault();
+    _this7.submitChange(tablePlugin.changes.insertColumn);
+  };
+
+  this.onInsertRow = function (event) {
+    event.preventDefault();
+    _this7.submitChange(tablePlugin.changes.insertRow);
+  };
+
+  this.onRemoveColumn = function (event) {
+    event.preventDefault();
+    _this7.submitChange(tablePlugin.changes.removeColumn);
+  };
+
+  this.onRemoveRow = function (event) {
+    event.preventDefault();
+    _this7.submitChange(tablePlugin.changes.removeRow);
+  };
+
+  this.onRemoveTable = function (event) {
+    event.preventDefault();
+    _this7.submitChange(tablePlugin.changes.removeTable);
+  };
+
+  this.onSetAlign = function (event, align) {
+    event.preventDefault();
+    _this7.submitChange(function (change) {
+      return _aligns2.default.changes.setColumnAlign(change, align);
+    });
+  };
+
+  this.onExport = function (event) {
+    var value = _this7.state.value;
+
+    console.log(value.toJS());
+    var pdfmakeContents = (0, _stateToPdfMake2.default)(value.toJS());
+    console.log(pdfmakeContents);
+    window.pdfMake.createPdf(_extends({}, pdfmakeContents, {
+      defaultStyle: {
+        font: font
+      },
+      info: {
+        title: 'Betalpha',
+        author: 'Betalpha',
+        keywords: 'Betalpha'
+      }
+    })).download('Beptalpha');
+  };
+
+  this.hasBlock = function (type) {
+    var value = _this7.state.value;
+
+    return value.blocks.some(function (node) {
+      return node.type == type;
+    });
+  };
+
+  this.renderMarkButton = function (type, icon) {
+    var isActive = _this7.hasMark(type);
+
+    return _react2.default.createElement(
+      _components.Button,
+      {
+        active: isActive,
+        onMouseDown: function onMouseDown(event) {
+          return _this7.onClickMark(event, type);
+        }
+      },
+      _react2.default.createElement(
+        _components.Icon,
+        null,
+        icon
+      )
+    );
+  };
+
+  this.renderBlockButton = function (type, icon) {
+    var isActive = _this7.hasBlock(type);
+
+    if (['numbered-list', 'bulleted-list'].includes(type)) {
+      var value = _this7.state.value;
+
+      var parent = value.document.getParent(value.blocks.first().key);
+      isActive = _this7.hasBlock('list-item') && parent && parent.type === type;
+    }
+
+    return _react2.default.createElement(
+      _components.Button,
+      {
+        active: isActive,
+        onMouseDown: function onMouseDown(event) {
+          return _this7.onClickBlock(event, type);
+        }
+      },
+      _react2.default.createElement(
+        _components.Icon,
+        null,
+        icon
+      )
+    );
+  };
+
+  this.renderNode = function (props) {
+    var attributes = props.attributes,
+        children = props.children,
+        node = props.node;
+
+
+    switch (node.type) {
+      case 'block-quote':
+        return _react2.default.createElement(
+          'blockquote',
+          attributes,
+          children
+        );
+      case 'bulleted-list':
+        return _react2.default.createElement(
+          'ul',
+          attributes,
+          children
+        );
+      case 'heading-one':
+        return _react2.default.createElement(
+          'h1',
+          attributes,
+          children
+        );
+      case 'heading-two':
+        return _react2.default.createElement(
+          'h2',
+          attributes,
+          children
+        );
+      case 'list-item':
+        return _react2.default.createElement(
+          'li',
+          attributes,
+          children
+        );
+      case 'numbered-list':
+        return _react2.default.createElement(
+          'ol',
+          attributes,
+          children
+        );
+    }
+  };
+
+  this.renderMark = function (props) {
+    var children = props.children,
+        mark = props.mark,
+        attributes = props.attributes;
+
+
+    switch (mark.type) {
+      case 'bold':
+        return _react2.default.createElement(
+          'strong',
+          attributes,
+          children
+        );
+      case 'code':
+        return _react2.default.createElement(
+          'code',
+          attributes,
+          children
+        );
+      case 'italic':
+        return _react2.default.createElement(
+          'em',
+          attributes,
+          children
+        );
+      case 'underlined':
+        return _react2.default.createElement(
+          'u',
+          attributes,
+          children
+        );
+    }
+  };
+
+  this.onChange = function (_ref) {
+    var value = _ref.value;
+
+    _this7.setState({ value: value });
+  };
+
+  this.onKeyDown = function (event, change) {
+    var mark = void 0;
+
+    if (isBoldHotkey(event)) {
+      mark = 'bold';
+    } else if (isItalicHotkey(event)) {
+      mark = 'italic';
+    } else if (isUnderlinedHotkey(event)) {
+      mark = 'underlined';
+    } else if (isCodeHotkey(event)) {
+      mark = 'code';
+    } else {
+      return;
+    }
+
+    event.preventDefault();
+    change.toggleMark(mark);
+    return true;
+  };
+
+  this.onClickMark = function (event, type) {
+    event.preventDefault();
+    var value = _this7.state.value;
+
+    var change = value.change().toggleMark(type);
+    _this7.onChange(change);
+  };
+
+  this.onClickBlock = function (event, type) {
+    event.preventDefault();
+    var value = _this7.state.value;
+
+    var change = value.change();
+    var document = value.document;
+
+    // Handle everything but list buttons.
+
+    if (type != 'bulleted-list' && type != 'numbered-list') {
+      var isActive = _this7.hasBlock(type);
+      var isList = _this7.hasBlock('list-item');
+
+      if (isList) {
+        change.setBlocks(isActive ? DEFAULT_NODE : type).unwrapBlock('bulleted-list').unwrapBlock('numbered-list');
+      } else {
+        change.setBlocks(isActive ? DEFAULT_NODE : type);
+      }
+    } else {
+      // Handle the extra wrapping required for list buttons.
+      var _isList = _this7.hasBlock('list-item');
+      var isType = value.blocks.some(function (block) {
+        return !!document.getClosest(block.key, function (parent) {
+          return parent.type == type;
+        });
+      });
+
+      if (_isList && isType) {
+        change.setBlocks(DEFAULT_NODE).unwrapBlock('bulleted-list').unwrapBlock('numbered-list');
+      } else if (_isList) {
+        change.unwrapBlock(type == 'bulleted-list' ? 'numbered-list' : 'bulleted-list').wrapBlock(type);
+      } else {
+        change.setBlocks('list-item').wrapBlock(type);
+      }
+    }
+
+    _this7.onChange(change);
+  };
+};
+
 exports.default = RichTextExample;
 
-},{"./aligns":277,"./components":279,"is-hotkey":31,"prop-types":214,"react":224,"slate":273,"slate-edit-table":250,"slate-react":269}],279:[function(require,module,exports){
+},{"./aligns":277,"./components":279,"./state-to-pdf-make":280,"is-hotkey":31,"prop-types":214,"react":224,"slate":273,"slate-edit-table":250,"slate-react":269}],279:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56511,4 +56578,48 @@ var Menu = exports.Menu = (0, _reactEmotion2.default)('div')(_templateObject3);
 
 var Toolbar = exports.Toolbar = (0, _reactEmotion2.default)(Menu)(_templateObject4);
 
-},{"react":224,"react-emotion":219}]},{},[1]);
+},{"react":224,"react-emotion":219}],280:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function (state) {
+
+  var dd = {
+    content: [{ text: 'Tables', style: 'header' }, {
+      style: 'tableExample',
+      table: {
+        body: [[{ rowSpan: 3, text: 'rowSpan: 3\n\nborder:\n[false, false, false, false]', fillColor: '#eeeeee', border: [false, false, false, false] }, 'border:\nundefined', 'border:\nundefined'], ['', 'border:\nundefined', 'border:\nundefined'], ['', 'border:\nundefined', 'border:\nundefined']]
+      }
+    }],
+    styles: {
+      header: {
+        fontSize: 18,
+        bold: true,
+        margin: [0, 0, 0, 10]
+      },
+      subheader: {
+        fontSize: 16,
+        bold: true,
+        margin: [0, 10, 0, 5]
+      },
+      tableExample: {
+        margin: [0, 5, 0, 15]
+      },
+      tableHeader: {
+        bold: true,
+        fontSize: 13,
+        color: 'black'
+      }
+    },
+    defaultStyle: {
+      // alignment: 'justify'
+    }
+
+  };
+  return dd;
+};
+
+},{}]},{},[1]);
