@@ -56064,6 +56064,11 @@ var RichTextExample = function (_React$Component5) {
       _this5.submitChange(function (change) {
         return _aligns2.default.changes.setColumnAlign(change, align);
       });
+    }, _this5.onExport = function (event) {
+      var value = _this5.state.value;
+
+      console.log(value.toJS());
+      console.log(value.toJSON());
     }, _this5.hasBlock = function (type) {
       var value = _this5.state.value;
 
@@ -56359,10 +56364,14 @@ var RichTextExample = function (_React$Component5) {
         'div',
         null,
         _react2.default.createElement(
+          'div',
+          { onClick: this.onExport },
+          '\u5BFC\u51FA'
+        ),
+        _react2.default.createElement(
           _components.Toolbar,
           null,
           this.renderMarkButton('bold', 'format_bold'),
-          this.renderMarkButton('italic', 'format_italic'),
           this.renderMarkButton('underlined', 'format_underlined'),
           this.renderMarkButton('code', 'code'),
           this.renderBlockButton('heading-one', 'looks_one'),

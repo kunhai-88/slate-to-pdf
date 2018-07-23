@@ -330,6 +330,12 @@ class RichTextExample extends React.Component {
     );
   };
 
+  onExport = (event)=> {
+    const { value } = this.state;
+    console.log(value.toJS());
+    console.log(value.toJSON());
+  };
+
   /**
    * Check if the any of the currently selected blocks are of `type`.
    *
@@ -355,9 +361,9 @@ class RichTextExample extends React.Component {
 
     return (
       <div>
+        <div onClick={this.onExport} >导出</div>
         <Toolbar>
           {this.renderMarkButton('bold', 'format_bold')}
-          {this.renderMarkButton('italic', 'format_italic')}
           {this.renderMarkButton('underlined', 'format_underlined')}
           {this.renderMarkButton('code', 'code')}
           {this.renderBlockButton('heading-one', 'looks_one')}
