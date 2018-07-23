@@ -57585,7 +57585,7 @@ exports.Toolbar = exports.Menu = exports.Icon = exports.Button = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _templateObject = _taggedTemplateLiteral(['\n  cursor: pointer;\n  color: ', ';\n'], ['\n  cursor: pointer;\n  color: ', ';\n']),
+var _templateObject = _taggedTemplateLiteral(['\n  cursor: pointer;\n  margin-left: 15px;\n  color: ', ';\n'], ['\n  cursor: pointer;\n  margin-left: 15px;\n  color: ', ';\n']),
     _templateObject2 = _taggedTemplateLiteral(['\n  font-size: 18px;\n  vertical-align: text-bottom;\n'], ['\n  font-size: 18px;\n  vertical-align: text-bottom;\n']),
     _templateObject3 = _taggedTemplateLiteral(['\n  & > * {\n    display: inline-block;\n  }\n\n  & > * + * {\n    margin-left: 15px;\n  }\n'], ['\n  & > * {\n    display: inline-block;\n  }\n\n  & > * + * {\n    margin-left: 15px;\n  }\n']),
     _templateObject4 = _taggedTemplateLiteral(['\n  position: relative;\n  padding: 1px 18px 17px;\n  margin: 0 -20px;\n  border-bottom: 2px solid #eee;\n  margin-bottom: 20px;\n'], ['\n  position: relative;\n  padding: 1px 18px 17px;\n  margin: 0 -20px;\n  border-bottom: 2px solid #eee;\n  margin-bottom: 20px;\n']);
@@ -57605,7 +57605,7 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 var Button = exports.Button = (0, _reactEmotion2.default)('span')(_templateObject, function (props) {
-  return props.reversed ? props.active ? 'white' : '#aaa' : props.active ? 'black' : '#ccc';
+  return props.reversed ? props.active ? 'white' : '#aaa' : props.active ? 'black' : '#444';
 });
 
 var Icon = (0, _reactEmotion2.default)(function (_ref) {
@@ -57653,6 +57653,8 @@ var parse = function parse(nodes) {
       return parse(nextNodes);
     }
     return (0, _fp.map)(function (leaf) {
+      var marks = (0, _fp.prop)('marks')(leaf);
+      var types = (0, _fp.map)((0, _fp.prop)('type'))(marks);
       return (0, _fp.prop)('text')(leaf);
     })(leaves);
   })(nodes);

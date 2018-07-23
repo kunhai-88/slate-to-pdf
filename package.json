@@ -48,8 +48,10 @@
     "emotion": "^9.2.6",
     "immutable": "^3.8.2",
     "is-hotkey": "^0.1.2",
+    "lodash": "^4.17.10",
     "react-emotion": "^9.2.6",
     "slate": "^0.34.6",
+    "slate-edit-table": "^0.16.2",
     "slate-react": "^0.13.3"
   }
 }

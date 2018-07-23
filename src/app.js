@@ -6,6 +6,11 @@ import PropTypes from 'prop-types';
 import { isKeyHotkey } from 'is-hotkey'
 import { a, Icon, Toolbar, Button } from './components'
 import alignPlugin from './aligns';
+import stateToPdfMake  from './state-to-pdf-make';
+
+const font = 'SourceHanSerifCN';
+const ttf = 'SourceHanSerifCN-Regular.ttf';
+
 
 const tablePlugin = PluginEditTable({
   typeTable: 'table',
@@ -111,94 +116,6 @@ const initialValue = {
             "object": "text",
             "leaves": [
               {
-                "text": "This is editable "
-              },
-              {
-                "text": "rich",
-                "marks": [
-                  {
-                    "type": "bold"
-                  }
-                ]
-              },
-              {
-                "text": " text, "
-              },
-              {
-                "text": "much",
-                "marks": [
-                  {
-                    "type": "italic"
-                  }
-                ]
-              },
-              {
-                "text": " better than a "
-              },
-              {
-                "text": "<textarea>",
-                "marks": [
-                  {
-                    "type": "code"
-                  }
-                ]
-              },
-              {
-                "text": "!"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "object": "block",
-        "type": "paragraph",
-        "nodes": [
-          {
-            "object": "text",
-            "leaves": [
-              {
-                "text":
-                  "Since it's rich text, you can do things like turn a selection of text "
-              },
-              {
-                "text": "bold",
-                "marks": [
-                  {
-                    "type": "bold"
-                  }
-                ]
-              },
-              {
-                "text":
-                  ", or add a semantically rendered block quote in the middle of the page, like this:"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "object": "block",
-        "type": "block-quote",
-        "nodes": [
-          {
-            "object": "text",
-            "leaves": [
-              {
-                "text": "A wise quote."
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "object": "block",
-        "type": "paragraph",
-        "nodes": [
-          {
-            "object": "text",
-            "leaves": [
-              {
                 "text": "Try it out for yourself!"
               }
             ]
@@ -243,10 +160,25 @@ class RichTextExample extends React.Component {
   submitChange: Function;
   editorREF: Editor;
 
-  state = {
-    value: Value.fromJSON(initialValue),
-  }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: Value.fromJSON(initialValue),
+    };
+
+    if (window.pdfMake) {
+      console.log('333');
+      window.pdfMake.fonts = {
+        [font]: {
+          normal: ttf,
+          bold: 'SourceHanSerifCN-Bold.ttf',
+          italics: ttf,
+          bolditalics: ttf,
+        } };
+    }
+  }
+  
   /**
    * Check if the current selection has a mark with `type` in it.
    *
@@ -333,7 +265,19 @@ class RichTextExample extends React.Component {
   onExport = (event)=> {
     const { value } = this.state;
     console.log(value.toJS());
-    console.log(value.toJSON());
+    const pdfmakeContents = stateToPdfMake(value.toJS());
+    console.log(pdfmakeContents);
+    window.pdfMake.createPdf({
+      ...pdfmakeContents,
+      defaultStyle: {
+        font,
+      },
+      info: {
+        title:  'Betalpha',
+        author: 'Betalpha',
+        keywords: 'Betalpha',
+      },
+    }).download('Beptalpha');
   };
 
   /**
@@ -362,20 +306,19 @@ class RichTextExample extends React.Component {
     return (
       <div>
         <div onClick={this.onExport} >导出</div>
-        <Toolbar>
-          {this.renderMarkButton('bold', 'format_bold')}
-          {this.renderMarkButton('underlined', 'format_underlined')}
-          {this.renderMarkButton('code', 'code')}
-          {this.renderBlockButton('heading-one', 'looks_one')}
-          {this.renderBlockButton('heading-two', 'looks_two')}
-          {this.renderBlockButton('block-quote', 'format_quote')}
-          {this.renderBlockButton('numbered-list', 'format_list_numbered')}
-          {this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
+        <div className={'Toolbar'}>
+          {this.renderMarkButton('bold', 'bold')}
+          {this.renderMarkButton('underlined', 'underlined')}
+          {this.renderBlockButton('heading-one', 'H1')}
+          {this.renderBlockButton('heading-two', 'H2')}
+          {this.renderBlockButton('heading-two', 'H3')}
+          {this.renderBlockButton('numbered-list', 'ordered')}
+          {this.renderBlockButton('bulleted-list', 'unordered')}
 
           {isInTable ? this.renderTableToolbar() : null}
           {isOutTable ? this.renderNormalToolbar() : null}
 
-        </Toolbar>
+        </div>
         <Editor
           spellCheck
           autoFocus
@@ -451,14 +394,14 @@ class RichTextExample extends React.Component {
     const { attributes, children, node } = props
 
     switch (node.type) {
-      case 'block-quote':
-        return <blockquote {...attributes}>{children}</blockquote>
       case 'bulleted-list':
         return <ul {...attributes}>{children}</ul>
       case 'heading-one':
         return <h1 {...attributes}>{children}</h1>
       case 'heading-two':
         return <h2 {...attributes}>{children}</h2>
+      case 'heading-three':
+        return <h3 {...attributes}>{children}</h3>
       case 'list-item':
         return <li {...attributes}>{children}</li>
       case 'numbered-list':
