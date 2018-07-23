@@ -1,5 +1,3 @@
-// @flow
-import { type Change } from 'slate';
 import { NODE_DATA_INVALID } from 'slate-schema-violations';
 import PluginEditTable from 'slate-edit-table';
 
@@ -14,10 +12,7 @@ const tablePlugin = PluginEditTable({
     typeContent: 'paragraph'
 });
 
-/*
- * Set align data for the current column
- */
-function setColumnAlign(change: Change, align: string): Change {
+function setColumnAlign(change, align) {
     const pos = tablePlugin.utils.getPosition(change.value);
     const columnCells = tablePlugin.utils.getCellsAtColumn(
         pos.table,
@@ -37,7 +32,7 @@ const alignPlugin = {
                     // Make sure cells have an alignment
                     align: align => ['left', 'center', 'right'].includes(align)
                 },
-                normalize(change: Change, violation: string, context: Object) {
+                normalize(change, violation, context) {
                     if (violation === NODE_DATA_INVALID) {
                         change.setNodeByKey(context.node.key, {
                             data: context.node.data.set('align', 'left')

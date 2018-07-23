@@ -40,13 +40,7 @@ function renderNode(props) {
 
 const plugins = [tablePlugin, alignPlugin, { renderNode }];
 
-type NodeProps = {
-  attributes: Object,
-  children: React.Node,
-  node: Block
-};
-
-class Table extends React.Component<NodeProps> {
+class Table extends React.Component {
   static childContextTypes = {
     isInTable: PropTypes.bool
   };
@@ -65,14 +59,14 @@ class Table extends React.Component<NodeProps> {
   }
 }
 
-class TableRow extends React.Component<NodeProps> {
+class TableRow extends React.Component {
   render() {
     const { attributes, children } = this.props;
     return <tr {...attributes}>{children}</tr>;
   }
 }
 
-class TableCell extends React.Component<NodeProps> {
+class TableCell extends React.Component {
   render() {
     const { attributes, children, node } = this.props;
 
@@ -86,7 +80,7 @@ class TableCell extends React.Component<NodeProps> {
   }
 }
 
-class Paragraph extends React.Component<NodeProps> {
+class Paragraph extends React.Component{
   static contextTypes = {
     isInTable: PropTypes.bool
   };
@@ -152,23 +146,12 @@ const isCodeHotkey = isKeyHotkey('mod+`')
  */
 
 class RichTextExample extends React.Component {
-  /**
-   * Deserialize the initial editor value.
-   *
-   * @type {Object}
-   */
-  submitChange: Function;
-  editorREF: Editor;
-
-
   constructor(props) {
     super(props);
     this.state = {
       value: Value.fromJSON(initialValue),
     };
-
     if (window.pdfMake) {
-      console.log('333');
       window.pdfMake.fonts = {
         [font]: {
           normal: ttf,
@@ -201,13 +184,13 @@ class RichTextExample extends React.Component {
         <button onMouseDown={this.onRemoveTable}>Remove Table</button>
         <br />
         <button onMouseDown={e => this.onSetAlign(e, 'left')}>
-          Set align left
+          左对齐
             </button>
         <button onMouseDown={e => this.onSetAlign(e, 'center')}>
-          Set align center
+         居中
             </button>
         <button onMouseDown={e => this.onSetAlign(e, 'right')}>
-          Set align right
+          右对齐
             </button>
       </div>
     );
@@ -221,7 +204,7 @@ class RichTextExample extends React.Component {
     );
   }
 
-  setEditorComponent = (ref: Editor) => {
+  setEditorComponent = (ref) => {
     this.editorREF = ref;
     this.submitChange = ref.change;
   };

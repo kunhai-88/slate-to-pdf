@@ -56743,8 +56743,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-require('slate');
-
 var _slateSchemaViolations = require('slate-schema-violations');
 
 var _slateEditTable = require('slate-edit-table');
@@ -56763,10 +56761,6 @@ var tablePlugin = (0, _slateEditTable2.default)({
     typeCell: 'table_cell',
     typeContent: 'paragraph'
 });
-
-/*
- * Set align data for the current column
- */
 
 function setColumnAlign(change, align) {
     var pos = tablePlugin.utils.getPosition(change.value);
@@ -56805,7 +56799,7 @@ var alignPlugin = {
 
 exports.default = alignPlugin;
 
-},{"slate":278,"slate-edit-table":255,"slate-schema-violations":277}],283:[function(require,module,exports){
+},{"slate-edit-table":255,"slate-schema-violations":277}],283:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57063,11 +57057,6 @@ var isCodeHotkey = (0, _isHotkey.isKeyHotkey)('mod+`');
 var RichTextExample = function (_React$Component5) {
   _inherits(RichTextExample, _React$Component5);
 
-  /**
-   * Deserialize the initial editor value.
-   *
-   * @type {Object}
-   */
   function RichTextExample(props) {
     _classCallCheck(this, RichTextExample);
 
@@ -57078,9 +57067,7 @@ var RichTextExample = function (_React$Component5) {
     _this5.state = {
       value: _slate.Value.fromJSON(initialValue)
     };
-
     if (window.pdfMake) {
-      console.log('333');
       window.pdfMake.fonts = _defineProperty({}, font, {
         normal: ttf,
         bold: 'SourceHanSerifCN-Bold.ttf',
@@ -57137,21 +57124,21 @@ var RichTextExample = function (_React$Component5) {
           { onMouseDown: function onMouseDown(e) {
               return _this6.onSetAlign(e, 'left');
             } },
-          'Set align left'
+          '\u5DE6\u5BF9\u9F50'
         ),
         _react2.default.createElement(
           'button',
           { onMouseDown: function onMouseDown(e) {
               return _this6.onSetAlign(e, 'center');
             } },
-          'Set align center'
+          '\u5C45\u4E2D'
         ),
         _react2.default.createElement(
           'button',
           { onMouseDown: function onMouseDown(e) {
               return _this6.onSetAlign(e, 'right');
             } },
-          'Set align right'
+          '\u53F3\u5BF9\u9F50'
         )
       );
     }
