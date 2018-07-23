@@ -57201,15 +57201,15 @@ var RichTextExample = function (_React$Component5) {
           '\u5BFC\u51FA'
         ),
         _react2.default.createElement(
-          _components.Toolbar,
-          null,
-          this.renderMarkButton('bold', 'format_bold'),
-          this.renderMarkButton('underlined', 'format_underlined'),
+          'div',
+          { className: 'Toolbar' },
+          this.renderMarkButton('bold', 'bold'),
+          this.renderMarkButton('underlined', 'underlined'),
           this.renderBlockButton('heading-one', 'H1'),
           this.renderBlockButton('heading-two', 'H2'),
           this.renderBlockButton('heading-two', 'H3'),
-          this.renderBlockButton('numbered-list', 'format_list_numbered'),
-          this.renderBlockButton('bulleted-list', 'format_list_bulleted'),
+          this.renderBlockButton('numbered-list', 'ordered'),
+          this.renderBlockButton('bulleted-list', 'unordered'),
           isInTable ? this.renderTableToolbar() : null,
           isOutTable ? this.renderNormalToolbar() : null
         ),

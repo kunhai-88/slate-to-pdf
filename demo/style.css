@@ -1,13 +1,12 @@
 #target {
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   margin: 20px auto;
   position: relative;
   padding-top: 30px;
 }
 
 #target .toolbar {
-  position: absolute;
   top: 0;
 }
 
@@ -38,4 +37,7 @@
   border-right: none;
   flex: 1;
   word-break: break-all;
+}
+.Toolbar{
+  border-bottom: 1px solid #ddd;
 }
