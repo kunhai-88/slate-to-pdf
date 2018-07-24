@@ -291,7 +291,7 @@ class RichTextExample extends React.Component {
         <div onClick={this.onExport} >导出</div>
         <div className={'Toolbar'}>
           {this.renderMarkButton('bold', 'bold')}
-          {this.renderMarkButton('underlined', 'underlined')}
+          {this.renderMarkButton('underline', 'underline')}
           {this.renderBlockButton('h1', 'H1')}
           {this.renderBlockButton('h2', 'H2')}
           {this.renderBlockButton('h3', 'H3')}
@@ -409,7 +409,7 @@ class RichTextExample extends React.Component {
         return <code {...attributes}>{children}</code>
       case 'italic':
         return <em {...attributes}>{children}</em>
-      case 'underlined':
+      case 'underline':
         return <u {...attributes}>{children}</u>
     }
   }
@@ -440,7 +440,7 @@ class RichTextExample extends React.Component {
     } else if (isItalicHotkey(event)) {
       mark = 'italic'
     } else if (isUnderlinedHotkey(event)) {
-      mark = 'underlined'
+      mark = 'underline'
     } else if (isCodeHotkey(event)) {
       mark = 'code'
     } else {

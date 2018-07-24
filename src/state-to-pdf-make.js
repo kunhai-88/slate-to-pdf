@@ -2,7 +2,6 @@ import {
   prop, 
   map, 
   includes, 
-  has,
   flow,
 } from 'lodash/fp'
 
@@ -14,9 +13,11 @@ import {
 
 const LEAF = 'leaf';
 const BLOCK = 'block';
+
 const TABLE ='table';
 const BOLD = 'bold';
-const UNDERLINE = 'underlined';
+const UNDERLINE = 'underline';
+const NumberList = 'numbered-list';
 
 const H1 ='h1';
 const H2 ='h2';
@@ -69,7 +70,7 @@ const parse = (nodes)=>map((node)=>{
         }
       };
     }
-    if(has(type)(H_TITLE)){
+    if(fastHas(type)(H_TITLE)){
       return 	{
         style: type,
         text: parseH(nextNodes),

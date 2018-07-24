@@ -57191,7 +57191,7 @@ var RichTextExample = function (_React$Component5) {
           'div',
           { className: 'Toolbar' },
           this.renderMarkButton('bold', 'bold'),
-          this.renderMarkButton('underlined', 'underlined'),
+          this.renderMarkButton('underline', 'underline'),
           this.renderBlockButton('h1', 'H1'),
           this.renderBlockButton('h2', 'H2'),
           this.renderBlockButton('h3', 'H3'),
@@ -57477,7 +57477,7 @@ var _initialiseProps = function _initialiseProps() {
           attributes,
           children
         );
-      case 'underlined':
+      case 'underline':
         return _react2.default.createElement(
           'u',
           attributes,
@@ -57500,7 +57500,7 @@ var _initialiseProps = function _initialiseProps() {
     } else if (isItalicHotkey(event)) {
       mark = 'italic';
     } else if (isUnderlinedHotkey(event)) {
-      mark = 'underlined';
+      mark = 'underline';
     } else if (isCodeHotkey(event)) {
       mark = 'code';
     } else {
@@ -57710,9 +57710,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var LEAF = 'leaf';
 var BLOCK = 'block';
+
 var TABLE = 'table';
 var BOLD = 'bold';
-var UNDERLINE = 'underlined';
+var UNDERLINE = 'underline';
+var NumberList = 'numbered-list';
 
 var H1 = 'h1';
 var H2 = 'h2';
@@ -57734,7 +57736,6 @@ var parseText = function parseText(leaf) {
 
 var parseH = function parseH(nodes) {
   var leaf = (0, _fp.flow)(head, (0, _opt.fastProp)('leaves'), head)(nodes);
-  console.log(leaf);
   var marks = (0, _opt.fastProp)('marks')(leaf);
   var types = (0, _fp.map)((0, _opt.fastProp)('type'))(marks);
   return {
@@ -57759,7 +57760,7 @@ var parse = function parse(nodes) {
           }
         };
       }
-      if ((0, _fp.has)(type)(H_TITLE)) {
+      if ((0, _opt.fastHas)(type)(H_TITLE)) {
         return {
           style: type,
           text: parseH(nextNodes)
