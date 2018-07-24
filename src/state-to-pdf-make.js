@@ -1,8 +1,10 @@
-import { prop, map } from 'lodash/fp'
+import { prop, map, includes } from 'lodash/fp'
 
 const LEAF = 'leaf';
 const BLOCK = 'block';
 const TABLE ='table';
+const BOLD = 'bold';
+const UNDERLINE = 'underlined';
 
 const parse = (nodes)=>map((node)=>{
   const object = prop('object')(node);
@@ -20,11 +22,16 @@ const parse = (nodes)=>map((node)=>{
     }
     return parse(nextNodes);
   }
-  return map((leaf)=>{
+  const data = map((leaf)=>{
     const marks = prop('marks')(leaf);
     const types = map(prop('type'))(marks);
-    return prop('text')(leaf);
+    return {
+        text: prop('text')(leaf),
+        bold: includes(BOLD)(types),
+        decoration: includes(UNDERLINE)(types) ? 'underline': '' ,
+      };
   })(leaves);
+   return data.length ? { text: [...data], fontSize: 12, lineHeight: 1.5 } : { text: '\n' };
 })(nodes);
 
 
@@ -32,13 +39,15 @@ export default (state) => {
 
   const nodes = prop('document.nodes')(state);
   const res = parse(nodes);
+  const content = parse(nodes);
   console.log(nodes);
-  console.log(parse(nodes));
+  console.log(content);
+  console.log(JSON.stringify(content));
 
 
   var dd = {
-    content: [
-      ...parse(nodes),
+    content:[
+      ...content,
     ],
     styles: {
       header: {

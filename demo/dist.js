@@ -57023,7 +57023,7 @@ var initialValue = {
       "nodes": [{
         "object": "text",
         "leaves": [{
-          "text": "Try it out for yourself!"
+          "text": "报表导出测试!"
         }]
       }]
     }]
@@ -57621,6 +57621,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 var LEAF = 'leaf';
 var BLOCK = 'block';
 var TABLE = 'table';
+var BOLD = 'bold';
+var UNDERLINE = 'underlined';
 
 var parse = function parse(nodes) {
   return (0, _fp.map)(function (node) {
@@ -57639,11 +57641,16 @@ var parse = function parse(nodes) {
       }
       return parse(nextNodes);
     }
-    return (0, _fp.map)(function (leaf) {
+    var data = (0, _fp.map)(function (leaf) {
       var marks = (0, _fp.prop)('marks')(leaf);
       var types = (0, _fp.map)((0, _fp.prop)('type'))(marks);
-      return (0, _fp.prop)('text')(leaf);
+      return {
+        text: (0, _fp.prop)('text')(leaf),
+        bold: (0, _fp.includes)(BOLD)(types),
+        decoration: (0, _fp.includes)(UNDERLINE)(types) ? 'underline' : ''
+      };
     })(leaves);
+    return data.length ? { text: [].concat(_toConsumableArray(data)), fontSize: 12, lineHeight: 1.5 } : { text: '\n' };
   })(nodes);
 };
 
@@ -57651,11 +57658,13 @@ exports.default = function (state) {
 
   var nodes = (0, _fp.prop)('document.nodes')(state);
   var res = parse(nodes);
+  var content = parse(nodes);
   console.log(nodes);
-  console.log(parse(nodes));
+  console.log(content);
+  console.log(JSON.stringify(content));
 
   var dd = {
-    content: [].concat(_toConsumableArray(parse(nodes))),
+    content: [].concat(_toConsumableArray(content)),
     styles: {
       header: {
         fontSize: 18,
