@@ -292,9 +292,9 @@ class RichTextExample extends React.Component {
         <div className={'Toolbar'}>
           {this.renderMarkButton('bold', 'bold')}
           {this.renderMarkButton('underlined', 'underlined')}
-          {this.renderBlockButton('heading-one', 'H1')}
-          {this.renderBlockButton('heading-two', 'H2')}
-          {this.renderBlockButton('heading-two', 'H3')}
+          {this.renderBlockButton('h1', 'H1')}
+          {this.renderBlockButton('h2', 'H2')}
+          {this.renderBlockButton('h3', 'H3')}
           {this.renderBlockButton('numbered-list', 'ordered')}
           {this.renderBlockButton('bulleted-list', 'unordered')}
 
@@ -379,11 +379,11 @@ class RichTextExample extends React.Component {
     switch (node.type) {
       case 'bulleted-list':
         return <ul {...attributes}>{children}</ul>
-      case 'heading-one':
+      case 'h1':
         return <h1 {...attributes}>{children}</h1>
-      case 'heading-two':
+      case 'h2':
         return <h2 {...attributes}>{children}</h2>
-      case 'heading-three':
+      case 'h3':
         return <h3 {...attributes}>{children}</h3>
       case 'list-item':
         return <li {...attributes}>{children}</li>

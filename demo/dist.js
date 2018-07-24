@@ -57192,9 +57192,9 @@ var RichTextExample = function (_React$Component5) {
           { className: 'Toolbar' },
           this.renderMarkButton('bold', 'bold'),
           this.renderMarkButton('underlined', 'underlined'),
-          this.renderBlockButton('heading-one', 'H1'),
-          this.renderBlockButton('heading-two', 'H2'),
-          this.renderBlockButton('heading-two', 'H3'),
+          this.renderBlockButton('h1', 'H1'),
+          this.renderBlockButton('h2', 'H2'),
+          this.renderBlockButton('h3', 'H3'),
           this.renderBlockButton('numbered-list', 'ordered'),
           this.renderBlockButton('bulleted-list', 'unordered'),
           isInTable ? this.renderTableToolbar() : null,
@@ -57419,19 +57419,19 @@ var _initialiseProps = function _initialiseProps() {
           attributes,
           children
         );
-      case 'heading-one':
+      case 'h1':
         return _react2.default.createElement(
           'h1',
           attributes,
           children
         );
-      case 'heading-two':
+      case 'h2':
         return _react2.default.createElement(
           'h2',
           attributes,
           children
         );
-      case 'heading-three':
+      case 'h3':
         return _react2.default.createElement(
           'h3',
           attributes,
@@ -57562,7 +57562,7 @@ var _initialiseProps = function _initialiseProps() {
 
 exports.default = RichTextExample;
 
-},{"./aligns":282,"./components":284,"./state-to-pdf-make":285,"is-hotkey":31,"prop-types":219,"react":229,"slate":278,"slate-edit-table":255,"slate-react":274}],284:[function(require,module,exports){
+},{"./aligns":282,"./components":284,"./state-to-pdf-make":286,"is-hotkey":31,"prop-types":219,"react":229,"slate":278,"slate-edit-table":255,"slate-react":274}],284:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57613,16 +57613,136 @@ var Toolbar = exports.Toolbar = (0, _reactEmotion2.default)(Menu)(_templateObjec
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.fastNth = exports.fastHas = exports.getHeadObjectKeys = exports.copyObject = exports.normalize = exports.getProp = exports.fastProp = undefined;
 
 var _fp = require('lodash/fp');
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var fastProp = exports.fastProp = function fastProp(key) {
+  return function (object) {
+    return object && object[key];
+  };
+};
+
+var getProp = exports.getProp = function getProp(key) {
+  return function (object) {
+    if (key === undefined) {
+      return undefined;
+    }
+    var keysArr = key.split('.');
+    var index = 0;
+    var length = keysArr.length;
+
+    while (object != null && index < length) {
+      // eslint-disable-next-line
+      object = object[keysArr[index++]];
+    }
+    return object;
+  };
+};
+
+var normalize = exports.normalize = function normalize(arr) {
+  var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'id';
+
+  var obj = {};
+  if ((0, _fp.isEmpty)(arr)) {
+    return {};
+  }
+  if (!(0, _fp.isArray)(arr)) {
+    return _defineProperty({}, getProp(key)(arr), arr);
+  }
+  var length = (0, _fp.size)(arr);
+  if ((0, _fp.includes)('.')(key)) {
+    for (var i = 0; i < length; i += 1) {
+      obj[getProp(key)(arr[i])] = arr[i];
+    }
+  } else {
+    for (var _i = 0; _i < length; _i += 1) {
+      obj[arr[_i][key]] = arr[_i];
+    }
+  }
+  return obj;
+};
+
+var copyObject = exports.copyObject = function copyObject(keysArr) {
+  return function (obj) {
+    var data = {};
+    (0, _fp.forEach)(function (key) {
+      data[key] = obj[key];
+    })(keysArr);
+    return data;
+  };
+};
+
+var getHeadObjectKeys = exports.getHeadObjectKeys = function getHeadObjectKeys(obj) {
+  return (0, _fp.keys)((0, _fp.first)(obj));
+};
+
+var fastHas = exports.fastHas = function fastHas(key) {
+  return function (object) {
+    return object != null && hasOwnProperty.call(object, key);
+  };
+};
+
+var fastNth = exports.fastNth = function fastNth(index) {
+  return function (arr) {
+    return arr && arr[index];
+  };
+};
+
+},{"lodash/fp":177}],286:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _H_TITLE;
+
+var _fp = require('lodash/fp');
+
+var _opt = require('./opt');
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var LEAF = 'leaf';
 var BLOCK = 'block';
 var TABLE = 'table';
 var BOLD = 'bold';
 var UNDERLINE = 'underlined';
+
+var H1 = 'h1';
+var H2 = 'h2';
+var H3 = 'h3';
+
+var head = (0, _opt.fastNth)(0);
+
+var H_TITLE = (_H_TITLE = {}, _defineProperty(_H_TITLE, H1, H1), _defineProperty(_H_TITLE, H2, H2), _defineProperty(_H_TITLE, H3, H3), _H_TITLE);
+
+var parseText = function parseText(leaf) {
+  var marks = (0, _fp.prop)('marks')(leaf);
+  var types = (0, _fp.map)((0, _fp.prop)('type'))(marks);
+  return {
+    text: (0, _fp.prop)('text')(leaf),
+    bold: (0, _fp.includes)(BOLD)(types),
+    decoration: (0, _fp.includes)(UNDERLINE)(types) ? 'underline' : ''
+  };
+};
+
+var parseH = function parseH(nodes) {
+  var leaf = (0, _fp.flow)(head, (0, _opt.fastProp)('leaves'), head)(nodes);
+  console.log(leaf);
+  var marks = (0, _opt.fastProp)('marks')(leaf);
+  var types = (0, _fp.map)((0, _opt.fastProp)('type'))(marks);
+  return {
+    text: (0, _opt.fastProp)('text')(leaf),
+    bold: true,
+    decoration: (0, _fp.includes)(UNDERLINE)(types) ? 'underline' : ''
+  };
+};
 
 var parse = function parse(nodes) {
   return (0, _fp.map)(function (node) {
@@ -57639,17 +57759,15 @@ var parse = function parse(nodes) {
           }
         };
       }
+      if ((0, _fp.has)(type)(H_TITLE)) {
+        return {
+          style: type,
+          text: parseH(nextNodes)
+        };
+      }
       return parse(nextNodes);
     }
-    var data = (0, _fp.map)(function (leaf) {
-      var marks = (0, _fp.prop)('marks')(leaf);
-      var types = (0, _fp.map)((0, _fp.prop)('type'))(marks);
-      return {
-        text: (0, _fp.prop)('text')(leaf),
-        bold: (0, _fp.includes)(BOLD)(types),
-        decoration: (0, _fp.includes)(UNDERLINE)(types) ? 'underline' : ''
-      };
-    })(leaves);
+    var data = (0, _fp.map)(parseText)(leaves);
     return data.length ? { text: [].concat(_toConsumableArray(data)), fontSize: 12, lineHeight: 1.5 } : { text: '\n' };
   })(nodes);
 };
@@ -57666,6 +57784,21 @@ exports.default = function (state) {
   var dd = {
     content: [].concat(_toConsumableArray(content)),
     styles: {
+      h1: {
+        fontSize: 24,
+        bold: true,
+        margin: [0, 5, 0, 0]
+      },
+      h2: {
+        fontSize: 20,
+        bold: true,
+        margin: [0, 5, 0, 0]
+      },
+      h3: {
+        fontSize: 16,
+        bold: true,
+        margin: [0, 5, 0, 10]
+      },
       header: {
         fontSize: 18,
         bold: true,
@@ -57693,4 +57826,4 @@ exports.default = function (state) {
   return dd;
 };
 
-},{"lodash/fp":177}]},{},[1]);
+},{"./opt":285,"lodash/fp":177}]},{},[1]);
