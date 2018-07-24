@@ -4,7 +4,6 @@ import PluginEditTable from 'slate-edit-table';
 import React from 'react'
 import PropTypes from 'prop-types';
 import { isKeyHotkey } from 'is-hotkey'
-import CannerEditor from 'canner-slate-editor';
 import { a, Icon, Toolbar, Button } from './components'
 import alignPlugin from './aligns';
 import stateToPdfMake  from './state-to-pdf-make';
@@ -314,10 +313,6 @@ class RichTextExample extends React.Component {
           renderMark={this.renderMark}
           ref={this.setEditorComponent}
           plugins={plugins}
-        />
-        <CannerEditor
-        value={value}
-        onChange={onChange}
         />
       </div>
     )
