@@ -42,8 +42,18 @@ module.exports ={
         ]
       },
       {
-        test: /\.json$/,
-        use: 'json-loader',
+        test: /\.css$/,
+        use:[
+          {loader: 'style-loader'},
+          {loader: 'css-loader'},
+        ]
+      },
+      {
+        test: /\.json/,
+        type: 'javascript/auto',
+        use: [
+          {loader: 'raw-loader'}
+        ],
       },
     ],
   },
