@@ -14,6 +14,10 @@ import Image from '@canner/slate-icon-image';
 import Bold from '@canner/slate-icon-bold';
 import Underline from '@canner/slate-icon-underline';
 import {Header1, Header2, Header3 } from '@canner/slate-icon-header';
+import stateToPdfMake  from './state-to-pdf-make';
+
+const font = 'SourceHanSerifCN';
+const ttf = 'SourceHanSerifCN-Regular.ttf';
 
 const menuToolbarOption = [
   { type: Undo, title: "Undo" },
@@ -68,12 +72,40 @@ const initialValue = Value.fromJSON({
   },
 });
 
-class DemoEditor extends React.Component<*, {value: Value}> {
+class DemoEditor extends React.Component {
   // Set the initial state when the app is first constructed.
-  state = {
-    value: initialValue
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: initialValue
+    };
+    if (window.pdfMake) {
+      window.pdfMake.fonts = {
+        [font]: {
+          normal: ttf,
+          bold: 'SourceHanSerifCN-Bold.ttf',
+          italics: ttf,
+          bolditalics: ttf,
+        } };
+    }
   }
-
+  onExport = (event)=> {
+    const { value } = this.state;
+    console.log(value.toJS());
+    const pdfmakeContents = stateToPdfMake(value.toJS());
+    console.log(pdfmakeContents);
+    window.pdfMake.createPdf({
+      ...pdfmakeContents,
+      defaultStyle: {
+        font,
+      },
+      info: {
+        title:  'Betalpha',
+        author: 'Betalpha',
+        keywords: 'Betalpha',
+      },
+    }).download('Beptalpha');
+  };
 
   render() {
     const {value} = this.state;
@@ -82,6 +114,7 @@ class DemoEditor extends React.Component<*, {value: Value}> {
     return (
       <div style={{margin: '20px'}}>
         <h1>Canner-slate-editor demo</h1>
+        <div onClick={this.onExport} >导出</div>
         <CannerEditor
           value={value}
           onChange={onChange}
