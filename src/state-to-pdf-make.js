@@ -1,27 +1,28 @@
-import { 
-  prop, 
-  map, 
-  includes, 
+import {
+  prop,
+  map,
+  includes,
   flow,
 } from 'lodash/fp'
 
-import { 
+import {
   fastNth,
   fastHas,
   fastProp,
- } from './opt';
+} from './opt';
 
 const LEAF = 'leaf';
 const BLOCK = 'block';
 
-const TABLE ='table';
+const TABLE = 'table';
 const BOLD = 'bold';
 const UNDERLINE = 'underline';
-const NumberList = 'numbered-list';
+const OL = 'ol';
+const UL = 'ul';
 
-const H1 ='h1';
-const H2 ='h2';
-const H3 ='h3';
+const H1 = 'h1';
+const H2 = 'h2';
+const H3 = 'h3';
 
 const head = fastNth(0);
 
@@ -31,18 +32,18 @@ const H_TITLE = {
   [H3]: H3,
 };
 
-const parseText = (leaf)=>{
+const parseText = (leaf) => {
   const marks = prop('marks')(leaf);
   const types = map(prop('type'))(marks);
   return {
-      text: prop('text')(leaf),
-      bold: includes(BOLD)(types),
-      decoration: includes(UNDERLINE)(types) ? 'underline': '' ,
-    };
+    text: prop('text')(leaf),
+    bold: includes(BOLD)(types),
+    decoration: includes(UNDERLINE)(types) ? 'underline' : '',
+  };
 };
 
-const parseH = (nodes)=>{
-  const leaf =  flow(
+const parseH = (nodes) => {
+  const leaf = flow(
     head,
     fastProp('leaves'),
     head,
@@ -50,36 +51,46 @@ const parseH = (nodes)=>{
   const marks = fastProp('marks')(leaf);
   const types = map(fastProp('type'))(marks);
   return {
-      text: fastProp('text')(leaf),
-      bold: true,
-      decoration: includes(UNDERLINE)(types) ? 'underline': '' ,
-    };
+    text: fastProp('text')(leaf),
+    bold: true,
+    decoration: includes(UNDERLINE)(types) ? 'underline' : '',
+  };
 };
 
-const parse = (nodes)=>map((node)=>{
+const parse = (nodes) => map((node) => {
   const object = prop('object')(node);
   const type = prop('type')(node);
   const leaves = prop('leaves')(node);
   const nextNodes = prop('nodes')(node);
-  if(nextNodes){
-    if(type === TABLE){
-      return 	{
+  if (nextNodes) {
+    if (type === TABLE) {
+      return {
         style: 'tableExample',
         table: {
-          body:  parse(nextNodes),
+          body: parse(nextNodes),
         }
       };
     }
-    if(fastHas(type)(H_TITLE)){
-      return 	{
+    if (fastHas(type)(H_TITLE)) {
+      return {
         style: type,
         text: parseH(nextNodes),
+      };
+    }
+    if (type === OL) {
+      return {
+        ol: parse(nextNodes),
+      };
+    }
+    if (type === UL) {
+      return {
+        ul: parse(nextNodes),
       };
     }
     return parse(nextNodes);
   }
   const data = map(parseText)(leaves);
-   return data.length ? { text: [...data], fontSize: 12, lineHeight: 1.5 } : { text: '\n' };
+  return data.length ? { text: [...data], fontSize: 12, lineHeight: 1.5 } : { text: '\n' };
 })(nodes);
 
 
@@ -94,7 +105,7 @@ export default (state) => {
 
 
   var dd = {
-    content:[
+    content: [
       ...content,
     ],
     styles: {

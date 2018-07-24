@@ -295,8 +295,8 @@ class RichTextExample extends React.Component {
           {this.renderBlockButton('h1', 'H1')}
           {this.renderBlockButton('h2', 'H2')}
           {this.renderBlockButton('h3', 'H3')}
-          {this.renderBlockButton('numbered-list', 'ordered')}
-          {this.renderBlockButton('bulleted-list', 'unordered')}
+          {this.renderBlockButton('ol', 'ordered')}
+          {this.renderBlockButton('ul', 'unordered')}
 
           {isInTable ? this.renderTableToolbar() : null}
           {isOutTable ? this.renderNormalToolbar() : null}
@@ -350,7 +350,7 @@ class RichTextExample extends React.Component {
   renderBlockButton = (type, icon) => {
     let isActive = this.hasBlock(type)
 
-    if (['numbered-list', 'bulleted-list'].includes(type)) {
+    if (['ol', 'ul'].includes(type)) {
       const { value } = this.state
       const parent = value.document.getParent(value.blocks.first().key)
       isActive = this.hasBlock('list-item') && parent && parent.type === type
@@ -377,7 +377,7 @@ class RichTextExample extends React.Component {
     const { attributes, children, node } = props
 
     switch (node.type) {
-      case 'bulleted-list':
+      case 'ul':
         return <ul {...attributes}>{children}</ul>
       case 'h1':
         return <h1 {...attributes}>{children}</h1>
@@ -387,7 +387,7 @@ class RichTextExample extends React.Component {
         return <h3 {...attributes}>{children}</h3>
       case 'list-item':
         return <li {...attributes}>{children}</li>
-      case 'numbered-list':
+      case 'ol':
         return <ol {...attributes}>{children}</ol>
     }
   }
@@ -480,15 +480,15 @@ class RichTextExample extends React.Component {
     const { document } = value
 
     // Handle everything but list buttons.
-    if (type != 'bulleted-list' && type != 'numbered-list') {
+    if (type != 'ul' && type != 'ol') {
       const isActive = this.hasBlock(type)
       const isList = this.hasBlock('list-item')
 
       if (isList) {
         change
           .setBlocks(isActive ? DEFAULT_NODE : type)
-          .unwrapBlock('bulleted-list')
-          .unwrapBlock('numbered-list')
+          .unwrapBlock('ul')
+          .unwrapBlock('ol')
       } else {
         change.setBlocks(isActive ? DEFAULT_NODE : type)
       }
@@ -502,12 +502,12 @@ class RichTextExample extends React.Component {
       if (isList && isType) {
         change
           .setBlocks(DEFAULT_NODE)
-          .unwrapBlock('bulleted-list')
-          .unwrapBlock('numbered-list')
+          .unwrapBlock('ul')
+          .unwrapBlock('ol')
       } else if (isList) {
         change
           .unwrapBlock(
-            type == 'bulleted-list' ? 'numbered-list' : 'bulleted-list'
+            type == 'ul' ? 'ol' : 'ul'
           )
           .wrapBlock(type)
       } else {

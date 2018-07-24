@@ -57195,8 +57195,8 @@ var RichTextExample = function (_React$Component5) {
           this.renderBlockButton('h1', 'H1'),
           this.renderBlockButton('h2', 'H2'),
           this.renderBlockButton('h3', 'H3'),
-          this.renderBlockButton('numbered-list', 'ordered'),
-          this.renderBlockButton('bulleted-list', 'unordered'),
+          this.renderBlockButton('ol', 'ordered'),
+          this.renderBlockButton('ul', 'unordered'),
           isInTable ? this.renderTableToolbar() : null,
           isOutTable ? this.renderNormalToolbar() : null
         ),
@@ -57383,7 +57383,7 @@ var _initialiseProps = function _initialiseProps() {
   this.renderBlockButton = function (type, icon) {
     var isActive = _this7.hasBlock(type);
 
-    if (['numbered-list', 'bulleted-list'].includes(type)) {
+    if (['ol', 'ul'].includes(type)) {
       var value = _this7.state.value;
 
       var parent = value.document.getParent(value.blocks.first().key);
@@ -57413,7 +57413,7 @@ var _initialiseProps = function _initialiseProps() {
 
 
     switch (node.type) {
-      case 'bulleted-list':
+      case 'ul':
         return _react2.default.createElement(
           'ul',
           attributes,
@@ -57443,7 +57443,7 @@ var _initialiseProps = function _initialiseProps() {
           attributes,
           children
         );
-      case 'numbered-list':
+      case 'ol':
         return _react2.default.createElement(
           'ol',
           attributes,
@@ -57529,12 +57529,12 @@ var _initialiseProps = function _initialiseProps() {
 
     // Handle everything but list buttons.
 
-    if (type != 'bulleted-list' && type != 'numbered-list') {
+    if (type != 'ul' && type != 'ol') {
       var isActive = _this7.hasBlock(type);
       var isList = _this7.hasBlock('list-item');
 
       if (isList) {
-        change.setBlocks(isActive ? DEFAULT_NODE : type).unwrapBlock('bulleted-list').unwrapBlock('numbered-list');
+        change.setBlocks(isActive ? DEFAULT_NODE : type).unwrapBlock('ul').unwrapBlock('ol');
       } else {
         change.setBlocks(isActive ? DEFAULT_NODE : type);
       }
@@ -57548,9 +57548,9 @@ var _initialiseProps = function _initialiseProps() {
       });
 
       if (_isList && isType) {
-        change.setBlocks(DEFAULT_NODE).unwrapBlock('bulleted-list').unwrapBlock('numbered-list');
+        change.setBlocks(DEFAULT_NODE).unwrapBlock('ul').unwrapBlock('ol');
       } else if (_isList) {
-        change.unwrapBlock(type == 'bulleted-list' ? 'numbered-list' : 'bulleted-list').wrapBlock(type);
+        change.unwrapBlock(type == 'ul' ? 'ol' : 'ul').wrapBlock(type);
       } else {
         change.setBlocks('list-item').wrapBlock(type);
       }
@@ -57714,7 +57714,8 @@ var BLOCK = 'block';
 var TABLE = 'table';
 var BOLD = 'bold';
 var UNDERLINE = 'underline';
-var NumberList = 'numbered-list';
+var OL = 'ol';
+var UL = 'ul';
 
 var H1 = 'h1';
 var H2 = 'h2';
@@ -57764,6 +57765,16 @@ var parse = function parse(nodes) {
         return {
           style: type,
           text: parseH(nextNodes)
+        };
+      }
+      if (type === OL) {
+        return {
+          ol: parse(nextNodes)
+        };
+      }
+      if (type === UL) {
+        return {
+          ul: parse(nextNodes)
         };
       }
       return parse(nextNodes);
