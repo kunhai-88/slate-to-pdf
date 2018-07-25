@@ -2,7 +2,8 @@
 
 ## 将Slate编辑器生成的内容转换为PDF输出
 
-![网页](https://raw.githubusercontent.com/ahai3840/slate-to-pdf/master/img/web.jpg)
+<img src="https://raw.githubusercontent.com/ahai3840/slate-to-pdf/master/img/web.jpg" height="600px"/>
+
 
 [PDF](https://github.com/ahai3840/slate-to-pdf/raw/master/pdf.pdf)
 
