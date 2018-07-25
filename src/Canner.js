@@ -15,6 +15,7 @@ import Underline from '@canner/slate-icon-underline';
 import { Header1, Header2, Header3 } from '@canner/slate-icon-header';
 import { Button } from 'antd';
 import { prop } from 'lodash/fp';
+import { createTable } from 'slate-edit-table/dist/utils';
 import stateToPdfMake from './state-to-pdf-make';
 import { Tree }  from './image';
 
@@ -92,6 +93,8 @@ const emptyValue = Value.fromJSON({
   },
 });
 
+
+
 class DemoEditor extends React.Component {
   // Set the initial state when the app is first constructed.
   constructor(props) {
@@ -157,6 +160,35 @@ class DemoEditor extends React.Component {
     console.log(value);
   };
 
+  onInsertTable= () => {
+    const { value } = this.state;
+    const  change = value.change();
+    console.log(change);
+    const table = createTable(
+      {
+        typeTable: 'table',
+        typeRow: 'table_row',
+        typeCell: 'table_cell',
+        typeContent: 'paragraph'
+      },
+      3,
+      3,
+      (i,j)=>{
+       console.log(i);
+      },
+    );
+    console.log(table);
+    // const newChange = change.insertText('dddd');
+    
+    const newChange = change.insertBlock(table).focus()
+    // value.change().insertText('dddd').collapseToStartOfNextText().focus();
+    // this.setState({
+    //    value,
+    // });
+    this.setState({ value: prop('value')(newChange) });
+    // console.log(value);
+  };
+
 
   render() {
     const { value } = this.state;
@@ -169,8 +201,11 @@ class DemoEditor extends React.Component {
       <div style={{ margin: '20px' }}>
         <h1>Canner to PDF demo</h1>
         <Button type="primary" onClick={this.onExport}>导出</Button> &nbsp;
-        <Button onClick={this.onClear}>清空</Button>
-        <Button onClick={this.onInsertImage}>插入图片</Button>
+        <Button onClick={this.onClear}>清空</Button> &nbsp;
+        <Button onClick={this.onInsertImage}>插入图片</Button> &nbsp;
+        <Button onClick={this.onInsertTable}>插入表格</Button>
+        <br />
+        <br /> 
         <CannerEditor
           value={value}
           onChange={onChange}
