@@ -9,14 +9,15 @@ import {
   fastNth,
   fastHas,
   fastProp,
+  getProp,
 } from './opt';
 
 const LEAF = 'leaf';
 const BLOCK = 'block';
 
 const TABLE = 'table';
-const BOLD = 'bold';
-const UNDERLINE = 'underline';
+const BOLD = 'BOLD';
+const UNDERLINE = 'UNDERLINE';
 const OL = 'ol';
 const UL = 'ul';
 
@@ -58,14 +59,16 @@ const parseH = (nodes) => {
 };
 
 const parse = (nodes) => map((node) => {
-  const object = prop('object')(node);
-  const type = prop('type')(node);
-  const leaves = prop('leaves')(node);
-  const nextNodes = prop('nodes')(node);
+  const object = fastProp('object')(node);
+  const type = fastProp('type')(node);
+  const leaves = fastProp('leaves')(node);
+  const nextNodes = fastProp('nodes')(node);
+  const alignment =  getProp('data.align')(node);
   if (nextNodes) {
     if (type === TABLE) {
       return {
         style: 'tableExample',
+        alignment,
         table: {
           body: parse(nextNodes),
         }
@@ -74,6 +77,7 @@ const parse = (nodes) => map((node) => {
     if (fastHas(type)(H_TITLE)) {
       return {
         style: type,
+        alignment,
         text: parseH(nextNodes),
       };
     }
@@ -87,10 +91,13 @@ const parse = (nodes) => map((node) => {
         ul: parse(nextNodes),
       };
     }
-    return parse(nextNodes);
+    return {
+      alignment,
+      text: parse(nextNodes),
+    };
   }
   const data = map(parseText)(leaves);
-  return data.length ? { text: [...data], fontSize: 12, lineHeight: 1.5 } : { text: '\n' };
+  return data.length ? { text: [...data], fontSize: 12, lineHeight: 1.5, alignment } : { text: '\n' };
 })(nodes);
 
 
@@ -144,7 +151,6 @@ export default (state) => {
       }
     },
     defaultStyle: {
-      // alignment: 'justify'
     }
 
   }

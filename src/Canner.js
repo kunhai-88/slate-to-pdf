@@ -28,7 +28,7 @@ const menuToolbarOption = [
   { type: Header3, title: "Header Three" },
   { type: Bold, title: "Bold" },
   { type: Underline, title: "underline" },
-  { type: Hr, title: "Ruler" },
+  // { type: Hr, title: "Ruler" },
   'seperator',
   { type: AlignLeft, title: "Align Left" },
   { type: AlignCenter, title: "Align Center" },
