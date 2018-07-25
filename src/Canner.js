@@ -105,6 +105,10 @@ class DemoEditor extends React.Component {
     }).download('Beptalpha');
   };
 
+  onClear = () => {
+    this.setState({ value:  Value.create() })
+  };
+
   render() {
     const { value } = this.state;
     const onChange = ({ value }) => this.setState({ value });
@@ -112,7 +116,8 @@ class DemoEditor extends React.Component {
     return (
       <div style={{ margin: '20px' }}>
         <h1>Canner to PDF demo</h1>
-        <Button type="primary" onClick={this.onExport}>导出</Button>
+        <Button type="primary" onClick={this.onExport}>导出</Button> &nbsp;
+        <Button onClick={this.onClear}>清空</Button>
         <CannerEditor
           value={value}
           onChange={onChange}
