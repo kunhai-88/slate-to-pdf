@@ -33,22 +33,19 @@ const menuToolbarOption = [
   { type: AlignLeft, title: "Align Left" },
   { type: AlignCenter, title: "Align Center" },
   { type: AlignRight, title: "Align Right" },
-  { type: Indent, title: "Indent" },
-  { type: Outdent, title: "Outdent" },
+  // { type: Indent, title: "Indent" },
+  // { type: Outdent, title: "Outdent" },
   'seperator',
   { type: OlList, title: "Order List" },
   { type: UlList, title: "Unorder List" },
   'seperator',
   // { type: Link, title: "Link" },
   { type: Image, title: "Image" },
- 
   // { type: CodeBlock, title: "Code Bloack" },
   { type: Table, title: "Table" },
   // 'seperator',
   // { type: FontColor, title: "Font Color" },
   // { type: FontBgColor, title: "Font Background Color" },
-  'seperator',
-  { type: 'fullScreen', title: "Full Screen" },
 ]
 
 const initialValue = Value.fromJSON({

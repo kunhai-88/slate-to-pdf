@@ -20,9 +20,9 @@ const UNDERLINE = 'underline';
 const OL = 'ol';
 const UL = 'ul';
 
-const H1 = 'h1';
-const H2 = 'h2';
-const H3 = 'h3';
+const H1 = 'header_one';
+const H2 = 'header_two';
+const H3 = 'header_three';
 
 const head = fastNth(0);
 
@@ -109,17 +109,17 @@ export default (state) => {
       ...content,
     ],
     styles: {
-      h1: {
+      header_one: {
         fontSize: 24,
         bold: true,
         margin: [0, 5, 0, 0]
       },
-      h2: {
+      header_two: {
         fontSize: 20,
         bold: true,
         margin: [0, 5, 0, 0]
       },
-      h3: {
+      header_three: {
         fontSize: 16,
         bold: true,
         margin: [0, 5, 0, 10]
