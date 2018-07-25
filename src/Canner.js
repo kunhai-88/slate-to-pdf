@@ -171,22 +171,16 @@ class DemoEditor extends React.Component {
         typeCell: 'table_cell',
         typeContent: 'paragraph'
       },
-      3,
-      3,
+      5,
+      5,
       (i,j)=>{
         return [Text.create({text: `Cute ${i} ${j} `})];
       },
     );
-    console.log(table);
-    // const newChange = change.insertText('dddd');
+  
     
-    const newChange = change.insertBlock(table).focus()
-    // value.change().insertText('dddd').collapseToStartOfNextText().focus();
-    // this.setState({
-    //    value,
-    // });
+    const newChange = change.insertBlock(table).focus();
     this.setState({ value: prop('value')(newChange) });
-    // console.log(value);
   };
 
 
@@ -199,7 +193,7 @@ class DemoEditor extends React.Component {
 
     return (
       <div style={{ margin: '20px' }}>
-        <h1>Canner to PDF demo</h1>
+        <h1>Canner Editor to PDF </h1>
         <Button type="primary" onClick={this.onExport}>导出</Button> &nbsp;
         <Button onClick={this.onClear}>清空</Button> &nbsp;
         <Button onClick={this.onInsertImage}>插入图片</Button> &nbsp;

@@ -85,7 +85,7 @@ const parse = (nodes) => map((node) => {
   if (nextNodes) {
     if (type === TABLE) {
       return {
-        style: 'tableExample',
+        style: 'table',
         alignment,
         table: {
           body: parse(nextNodes),
@@ -128,14 +128,8 @@ const parse = (nodes) => map((node) => {
 export default (state) => {
 
   const nodes = prop('document.nodes')(state);
-  const res = parse(nodes);
   const content = parse(nodes);
-  console.log(nodes);
-  console.log(content);
-  console.log(JSON.stringify(content));
-
-
-  var dd = {
+  return {
     content: [
       ...content,
     ],
@@ -155,17 +149,7 @@ export default (state) => {
         bold: true,
         margin: [0, 5, 0, 10]
       },
-      header: {
-        fontSize: 18,
-        bold: true,
-        margin: [0, 0, 0, 10]
-      },
-      subheader: {
-        fontSize: 16,
-        bold: true,
-        margin: [0, 10, 0, 5]
-      },
-      tableExample: {
+      table: {
         margin: [0, 5, 0, 15]
       },
       tableHeader: {
@@ -177,6 +161,5 @@ export default (state) => {
     defaultStyle: {
     }
 
-  }
-  return dd;
+  };
 }
