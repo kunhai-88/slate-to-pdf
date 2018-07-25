@@ -18,8 +18,8 @@ const BLOCK = 'block';
 const TABLE = 'table';
 const BOLD = 'BOLD';
 const UNDERLINE = 'UNDERLINE';
-const OL = 'ol';
-const UL = 'ul';
+const OL = 'ordered_list';
+const UL = 'unordered_list';
 
 const H1 = 'header_one';
 const H2 = 'header_two';
@@ -91,10 +91,13 @@ const parse = (nodes) => map((node) => {
         ul: parse(nextNodes),
       };
     }
-    return {
-      alignment,
-      text: parse(nextNodes),
-    };
+    if(alignment){
+      return {
+        alignment,
+        text: parse(nextNodes),
+      };
+    }
+    return  parse(nextNodes);
   }
   const data = map(parseText)(leaves);
   return data.length ? { text: [...data], fontSize: 12, lineHeight: 1.5, alignment } : { text: '\n' };

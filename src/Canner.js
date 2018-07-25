@@ -69,6 +69,27 @@ const initialValue = Value.fromJSON({
   },
 });
 
+const emptyValue = Value.fromJSON({
+  document: {
+    nodes: [
+      {
+        object: 'block',
+        type: 'paragraph',
+        nodes: [
+          {
+            object: 'text',
+            leaves: [
+              {
+                text: '',
+              }
+            ],
+          },
+        ],
+      },
+    ],
+  },
+});
+
 class DemoEditor extends React.Component {
   // Set the initial state when the app is first constructed.
   constructor(props) {
@@ -106,7 +127,7 @@ class DemoEditor extends React.Component {
   };
 
   onClear = () => {
-    this.setState({ value:  Value.create() })
+    this.setState({ value: emptyValue })
   };
 
   render() {
