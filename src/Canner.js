@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Value } from 'slate';
+import { Value, Text } from 'slate';
 import CannerEditor from 'canner-slate-editor';
 import Undo from '@canner/slate-icon-undo';
 import Redo from '@canner/slate-icon-redo';
@@ -174,7 +174,7 @@ class DemoEditor extends React.Component {
       3,
       3,
       (i,j)=>{
-       console.log(i);
+        return [Text.create({text: `Cute ${i} ${j} `})];
       },
     );
     console.log(table);
