@@ -1,20 +1,20 @@
 
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {Value} from 'slate';
+import { Value } from 'slate';
 import CannerEditor from 'canner-slate-editor';
 import Undo from '@canner/slate-icon-undo';
 import Redo from '@canner/slate-icon-redo';
-import {OlList, UlList} from '@canner/slate-icon-list';
-import {Indent, Outdent} from '@canner/slate-icon-indent';
-import {AlignCenter, AlignLeft, AlignRight} from '@canner/slate-icon-align';
+import { OlList, UlList } from '@canner/slate-icon-list';
+// import {Indent, Outdent} from '@canner/slate-icon-indent';
+import { AlignCenter, AlignLeft, AlignRight } from '@canner/slate-icon-align';
 import Table from '@canner/slate-icon-table';
 import Hr from '@canner/slate-icon-hr';
 import Image from '@canner/slate-icon-image';
 import Bold from '@canner/slate-icon-bold';
 import Underline from '@canner/slate-icon-underline';
-import {Header1, Header2, Header3 } from '@canner/slate-icon-header';
-import stateToPdfMake  from './state-to-pdf-make';
+import { Header1, Header2, Header3 } from '@canner/slate-icon-header';
+import { Button } from 'antd';
+import stateToPdfMake from './state-to-pdf-make';
 
 const font = 'SourceHanSerifCN';
 const ttf = 'SourceHanSerifCN-Regular.ttf';
@@ -83,10 +83,11 @@ class DemoEditor extends React.Component {
           bold: 'SourceHanSerifCN-Bold.ttf',
           italics: ttf,
           bolditalics: ttf,
-        } };
+        }
+      };
     }
   }
-  onExport = (event)=> {
+  onExport = (event) => {
     const { value } = this.state;
     console.log(value.toJS());
     const pdfmakeContents = stateToPdfMake(value.toJS());
@@ -97,7 +98,7 @@ class DemoEditor extends React.Component {
         font,
       },
       info: {
-        title:  'Betalpha',
+        title: 'Betalpha',
         author: 'Betalpha',
         keywords: 'Betalpha',
       },
@@ -105,13 +106,13 @@ class DemoEditor extends React.Component {
   };
 
   render() {
-    const {value} = this.state;
-    const onChange = ({value}) => this.setState({value});
+    const { value } = this.state;
+    const onChange = ({ value }) => this.setState({ value });
 
     return (
-      <div style={{margin: '20px'}}>
-        <h1>Canner-slate-editor demo</h1>
-        <div onClick={this.onExport} >导出</div>
+      <div style={{ margin: '20px' }}>
+        <h1>Canner to PDF demo</h1>
+        <Button type="primary" onClick={this.onExport}>导出</Button>
         <CannerEditor
           value={value}
           onChange={onChange}
@@ -126,7 +127,7 @@ class DemoEditor extends React.Component {
             }
           }}
           galleryConfig={null}
-          />
+        />
       </div>
     );
   }
