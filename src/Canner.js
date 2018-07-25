@@ -8,13 +8,15 @@ import { OlList, UlList } from '@canner/slate-icon-list';
 // import {Indent, Outdent} from '@canner/slate-icon-indent';
 import { AlignCenter, AlignLeft, AlignRight } from '@canner/slate-icon-align';
 import Table from '@canner/slate-icon-table';
-import Hr from '@canner/slate-icon-hr';
+// import Hr from '@canner/slate-icon-hr';
 import Image from '@canner/slate-icon-image';
 import Bold from '@canner/slate-icon-bold';
 import Underline from '@canner/slate-icon-underline';
 import { Header1, Header2, Header3 } from '@canner/slate-icon-header';
 import { Button } from 'antd';
+import { prop } from 'lodash/fp';
 import stateToPdfMake from './state-to-pdf-make';
+import { Tree }  from './image';
 
 const font = 'SourceHanSerifCN';
 const ttf = 'SourceHanSerifCN-Regular.ttf';
@@ -130,15 +132,45 @@ class DemoEditor extends React.Component {
     this.setState({ value: emptyValue })
   };
 
+  onInsertImage = () => {
+    const { value } = this.state;
+    const  change = value.change();
+    console.log(change);
+    // const newChange = change.insertText('dddd');
+    
+    const newChange = change.insertInline({
+      type: 'image',
+      isVoid: true,
+      data: {
+        src: Tree,
+        width: 500,
+        height: 500,
+      },
+    })
+    .collapseToStartOfNextText()
+    .focus()
+    value.change().insertText('dddd').collapseToStartOfNextText().focus();
+    this.setState({
+       value,
+    });
+    this.setState({ value: prop('value')(newChange) });
+    console.log(value);
+  };
+
+
   render() {
     const { value } = this.state;
-    const onChange = ({ value }) => this.setState({ value });
+    const onChange = (change) => {
+      const { value } = change;
+      this.setState({ value })
+    };
 
     return (
       <div style={{ margin: '20px' }}>
         <h1>Canner to PDF demo</h1>
         <Button type="primary" onClick={this.onExport}>导出</Button> &nbsp;
         <Button onClick={this.onClear}>清空</Button>
+        <Button onClick={this.onInsertImage}>插入图片</Button>
         <CannerEditor
           value={value}
           onChange={onChange}

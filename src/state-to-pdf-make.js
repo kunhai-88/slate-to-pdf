@@ -20,10 +20,13 @@ const BOLD = 'BOLD';
 const UNDERLINE = 'UNDERLINE';
 const OL = 'ordered_list';
 const UL = 'unordered_list';
-
+const IMAGE = 'image';
 const H1 = 'header_one';
 const H2 = 'header_two';
 const H3 = 'header_three';
+
+const MAX_HEIGHT = 760;
+const MAX_WIDTH = 500;
 
 const head = fastNth(0);
 
@@ -58,6 +61,21 @@ const parseH = (nodes) => {
   };
 };
 
+const parseImage = (node)=>{
+  const { src, alignment, width = 40, originHeight, originWidth } = fastProp('data')(node);
+  // let finalRatio = width / 100;
+  // let finalWidth = MAX_WIDTH * finalRatio;
+  // if (originHeight * finalRatio > MAX_HEIGHT) {
+  //   finalRatio = MAX_HEIGHT / originHeight;
+  //   finalWidth = originWidth * finalRatio;
+  // }
+ return {
+    image: src,
+    width: width,
+    alignment,
+  };
+}
+
 const parse = (nodes) => map((node) => {
   const object = fastProp('object')(node);
   const type = fastProp('type')(node);
@@ -90,6 +108,9 @@ const parse = (nodes) => map((node) => {
       return {
         ul: parse(nextNodes),
       };
+    }
+    if (type === IMAGE) {
+      return parseImage(node) ;
     }
     if(alignment){
       return {
