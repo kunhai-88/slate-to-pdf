@@ -4,9 +4,8 @@
   "description": "hello slate",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "NODE_ENV=development webpack --config=config/webpack.dev.js",
-    "start": "NODE_ENV=development webpack-dev-server --config=config/webpack.dev.js"
+    "build": "webpack --mode production --config=config/webpack.dev.js",
+    "start": "NODE_ENV=development webpack-dev-server --open --mode development --config=config/webpack.dev.js"
   },
   "repository": {
     "type": "git",
@@ -35,6 +34,7 @@
   "homepage": "https://github.com/ahai3840/slate-demo#readme",
   "dependencies": {
     "antd": "^3.7.1",
+    "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-plugin-transform-decorators-legacy": "^1.3.5",
     "babel-plugin-transform-exponentiation-operator": "^6.24.1",
