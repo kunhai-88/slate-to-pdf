@@ -172,7 +172,7 @@ class DemoEditor extends React.Component {
         typeContent: 'paragraph'
       },
       5,
-      5,
+      50,
       (i,j)=>{
         return [Text.create({text: `Cute ${i} ${j} `})];
       },
