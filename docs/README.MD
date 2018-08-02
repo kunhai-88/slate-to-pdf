@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Slate To PDF </title>
+    <link rel="stylesheet" href="style.css" />
+    
+    <script src="../dist/pdfmake.min.js"></script>
+    <script src="../dist/vfs_fonts.js"></script>
+    <style>
+      #target { width: 800px; }
+    </style>
+  </head>
+  <body>
+    <div id="target"></div>
+    <script src="../dist/main.js"></script>
+  </body>
+</html>
