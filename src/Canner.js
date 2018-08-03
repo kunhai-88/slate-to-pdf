@@ -204,6 +204,8 @@ class DemoEditor extends React.Component {
           value={value}
           onChange={onChange}
           menuToolbarOption={menuToolbarOption}
+          placeholder="请输入内容"
+          autoFocus
           serviceConfig={{
             name: 'image',
             accept: 'image/*',
