@@ -40,13 +40,11 @@
     "babel-plugin-transform-exponentiation-operator": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "canner-slate-editor": "git+https://github.com/ahai3840/canner-slate-editor.git",
-    "immutable": "^3.8.2",
     "json-loader": "^0.5.7",
     "lodash": "^4.17.10",
     "raw-loader": "^0.5.1",
     "slate": "^0.34.6",
     "slate-edit-table": "^0.16.2",
-    "slate-react": "^0.13.3",
     "webpack": "^4.16.2",
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "^3.1.5"
