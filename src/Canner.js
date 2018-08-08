@@ -7,7 +7,7 @@ import Redo from '@canner/slate-icon-redo';
 import { OlList, UlList } from '@canner/slate-icon-list';
 // import {Indent, Outdent} from '@canner/slate-icon-indent';
 import { AlignCenter, AlignLeft, AlignRight } from '@canner/slate-icon-align';
-import Table from 'slate-icon-table';
+import Table from '@canner/slate-icon-table';
 // import Hr from '@canner/slate-icon-hr';
 import Image from '@canner/slate-icon-image';
 import Bold from '@canner/slate-icon-bold';
@@ -205,15 +205,6 @@ class DemoEditor extends React.Component {
           menuToolbarOption={menuToolbarOption}
           placeholder="请输入内容"
           autoFocus
-          serviceConfig={{
-            name: 'image',
-            accept: 'image/*',
-            action: 'https://api.imgur.com/3/image',
-            headers: {
-              'Authorization': 'Client-ID a214c4836559c77',
-              'X-Requested-With': null
-            }
-          }}
           galleryConfig={null}
         />
       </div>
