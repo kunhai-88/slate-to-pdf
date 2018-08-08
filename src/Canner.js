@@ -7,7 +7,7 @@ import Redo from '@canner/slate-icon-redo';
 import { OlList, UlList } from '@canner/slate-icon-list';
 // import {Indent, Outdent} from '@canner/slate-icon-indent';
 import { AlignCenter, AlignLeft, AlignRight } from '@canner/slate-icon-align';
-import Table from '@canner/slate-icon-table';
+import Table from 'slate-icon-table';
 // import Hr from '@canner/slate-icon-hr';
 import Image from '@canner/slate-icon-image';
 import Bold from '@canner/slate-icon-bold';
@@ -139,7 +139,6 @@ class DemoEditor extends React.Component {
     const { value } = this.state;
     const  change = value.change();
     console.log(change);
-    // const newChange = change.insertText('dddd');
     
     const newChange = change.insertInline({
       type: 'image',
